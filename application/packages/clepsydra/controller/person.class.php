@@ -69,6 +69,12 @@ class person extends \foundry\controller {
 		);
 	}
 	
+	// create clock in action
+	public function clockin(){
+		// check if session exist
+		//testing 
+	}
+	
 }
 
 ?>
