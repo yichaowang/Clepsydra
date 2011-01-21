@@ -27,14 +27,11 @@ if( window.location.search.length
 		'text': message
 	});
 	
-	if( $('login') ) {
-		el.id = 'loginerror';
-		el.inject($$('form h1').pop(), 'after');
-	} else {
-		setTimeout(function() {
-			gryphon.statusMessage.display(message, type);
-		}, 1000);
-	}
+	
+	setTimeout(function() {
+		Rose.ui.statusMessage.display(message, type);
+	}, 1000);
+	
 }
 
 $$('.text-replace').each(function(el) {
