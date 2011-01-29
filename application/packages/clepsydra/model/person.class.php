@@ -59,7 +59,7 @@ class person extends \foundry\model {
 	protected $hasMany = array(
 		'card' => array(
 			'namespace' => 'clepsydra',
-			'order' => 'self:in desc',
+			'order' => 'self:timein desc',
 			'limit' => 100
 		)
 	);
