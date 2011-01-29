@@ -213,6 +213,19 @@ body#login_body {
 				color: #fff;
 				text-transform: none;
 			}
+
+			#clock_out {
+				-webkit-border-radius: 5px;
+				-moz-border-radius: 5px;
+				border-radius: 5px;
+				text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
+				padding: 7px 10px;
+				line-height: normal;
+				color: #fff;
+				text-transform: none;
+			}
+            
+            
 			
 
 /*

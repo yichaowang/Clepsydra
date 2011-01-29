@@ -62,6 +62,31 @@ $$('.text-replace').each(function(el) {
 	});
 });
 
-
-
 }); // end domready
+
+
+function updateClock(){
+	var currentTime = new Date();
+ 	var currentHours = currentTime.getHours();
+ 	var currentMinutes = currentTime.getMinutes();
+  	var currentSeconds = currentTime.getSeconds();
+
+  	// add 0 for min and second
+  	currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+  	currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
+
+  	// AM or PM	
+  	var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
+
+  	// 12 hour format
+  	currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
+
+  	// 0 am and 12 pm
+  	currentHours = ( currentHours == 0 ) ? 12 : currentHours;
+
+  	// Compose the string for display
+  	var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+
+  	// Update the time display
+  	document.getElementById("clock").firstChild.nodeValue = currentTimeString;
+}
