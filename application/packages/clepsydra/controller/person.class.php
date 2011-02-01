@@ -137,7 +137,6 @@ class person extends \foundry\controller {
 			$user->status=0;
 			$user->save();
 
-				
 			foreach( $user->cards as $card ) {
 				if ($card->timein == $card->timeout) {
 					$card->timeout = time();
@@ -149,9 +148,11 @@ class person extends \foundry\controller {
 		
 		$resp = new \foundry\response\redirect(URL::linkTo('clepsydra:person'));
 		return $resp;
+	}
+	
+	public function otherusers(){
 		
 	}
-
 }
 
 ?>

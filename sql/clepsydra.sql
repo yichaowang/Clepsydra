@@ -26,9 +26,9 @@ CREATE TABLE `clepsydra_cards` (
   `uid` int(11) NOT NULL AUTO_INCREMENT,
   `timein` int(11) DEFAULT '0',
   `timeout` int(11) DEFAULT '0',
-  `person_id` int(11) DEFAULT NULL,
+  `person_id` int(11) NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=latin1;
 
 
 # Dump of table clepsydra_messages
@@ -37,17 +37,15 @@ CREATE TABLE `clepsydra_cards` (
 DROP TABLE IF EXISTS `clepsydra_messages`;
 
 CREATE TABLE `clepsydra_messages` (
-  `uid` int(11) NOT NULL auto_increment,
-  `type` varchar(255) default NULL,
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) DEFAULT NULL,
   `message` text,
   `message_formatted` text,
-  `user_id` int(11) default NULL,
-  `to_user` int(11) default NULL,
-  `general` tinyint(1) default '0',
-  PRIMARY KEY  (`uid`)
+  `user_id` int(11) DEFAULT NULL,
+  `to_user` int(11) DEFAULT NULL,
+  `general` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`uid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-
 
 # Dump of table clepsydra_people
 # ------------------------------------------------------------
@@ -55,20 +53,22 @@ CREATE TABLE `clepsydra_messages` (
 DROP TABLE IF EXISTS `clepsydra_people`;
 
 CREATE TABLE `clepsydra_people` (
-  `uid` int(11) NOT NULL auto_increment,
-  `name` varchar(255) default NULL,
-  `email` varchar(255) default NULL,
-  `department` varchar(255) default NULL,
-  `pin` int(4) default '0',
-  `phone` varchar(10) default '0',
-  `active` tinyint(1) default '0',
-  `status` tinyint(1) default '0',
-  `is_admin` tinyint(1) NOT NULL default '0',
-  `track` tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `salt` int(11) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `department` varchar(255) DEFAULT NULL,
+  `pin` int(4) DEFAULT '0',
+  `phone` varchar(10) DEFAULT '0',
+  `active` tinyint(1) DEFAULT '0',
+  `status` tinyint(1) DEFAULT '0',
+  `is_admin` tinyint(1) DEFAULT '0',
+  `track` tinyint(1) DEFAULT '1',
+  `locked` int(11) DEFAULT '0',
+  `attempts` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 
 

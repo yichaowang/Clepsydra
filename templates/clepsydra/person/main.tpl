@@ -26,7 +26,7 @@
 		helper.status: {{ user.status }} <br/><br/>
 		
 		Variables: <br/>
-		Hour worked today: {{hour.d//0.01/100}} hours <br/> {# //0.01/100 is to rounded hour to the nearest 1/100 #}
+		Hour worked today: {{hour.d//0.01/100}} hours <br/> {# //0.01/100 is to round hour to the nearest 1/100 #}
 		Hour worked this week: {{hour.w//0.01/100}} hours <br/>
 		Hour worked this month: {{hour.m//0.01/100}} hours <br/>
 		Hour worked this year: {{hour.y//0.01/100}} hours <br/><br/>
