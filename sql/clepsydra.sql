@@ -23,13 +23,12 @@
 DROP TABLE IF EXISTS `clepsydra_cards`;
 
 CREATE TABLE `clepsydra_cards` (
-  `uid` int(11) NOT NULL auto_increment,
-  `in` int(11) NOT NULL default '0',
-  `out` int(11) NOT NULL default '0',
-  `user_id` int(11) default NULL,
-  PRIMARY KEY  (`uid`)
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `timein` int(11) DEFAULT '0',
+  `timeout` int(11) DEFAULT '0',
+  `person_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`uid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 
 
 # Dump of table clepsydra_messages

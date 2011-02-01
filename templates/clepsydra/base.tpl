@@ -1,3 +1,5 @@
+{% helper userHelper as user %}
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -6,7 +8,7 @@
 		<script type="text/javascript" src="{{ 'javascript/vendor.min.js'|url }}"></script>
 		<script type="text/javascript" src="{{ 'javascript/master.js'|url }}"></script>
 	</head>
-	<body>
+	<body onload="updateClock(); setInterval('updateClock()', 1000 )">
 	
 		<div id="header">
 			{% include 'clepsydra/header.tpl' %}
