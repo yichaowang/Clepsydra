@@ -77,7 +77,7 @@ var data = new URI(window.location.href).get('data');
 
 }); // end domready
 
-
+/*------Yichao--------*/
 function updateClock(){
 	var currentTime = new Date();
  	var currentHours = currentTime.getHours();
@@ -103,3 +103,26 @@ function updateClock(){
   	// Update the time display
   	document.getElementById("clock").firstChild.nodeValue = currentTimeString;
 }
+
+function recordtime(url,cfun){
+	var xmlhttp;
+	xmlhttp=(window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP"));
+	xmlhttp=onreadystatechange=cfun;
+	xmlhttp.open("GET",url,true);
+	xmlhttp.send();
+}
+
+function prograssbar(id){
+	document.getElementById(id).innerHTML="<a>Loading...</a>"
+}
+
+function clockin(){
+	prograssbar("prograss");
+	/*recordtime("/3cabfab8f977ae7d12a3773423acf849/clockin",function(){
+		if (xmlhttp.readyState==4 && xmlhttp.status==200){
+			document.getElementById("prograss")
+		}
+	})*/
+}
+
+

@@ -1,6 +1,7 @@
 {% extends 'clepsydra/base.tpl' %}
 
 {% block content %}
+{% helper userHelper as user %}
 
 	<div class="grid_6">
 		<h1>Welcome Back, {{ user.name }}.</h1>

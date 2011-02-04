@@ -123,8 +123,10 @@ class person extends \foundry\controller {
 			$card->save();			
 		}
 
-		$resp = new \foundry\response\redirect(URL::linkTo('clepsydra:person'));
-		return $resp;
+		//$resp = new \foundry\response\redirect(URL::linkTo('clepsydra:person'));
+		//return $resp;
+		
+		return array();
 		
 	}
 	
@@ -146,11 +148,13 @@ class person extends \foundry\controller {
 			}
 		}
 		
-		$resp = new \foundry\response\redirect(URL::linkTo('clepsydra:person'));
-		return $resp;
+		//$resp = new \foundry\response\redirect(URL::linkTo('clepsydra:person'));
+		//return $resp;
+		return array();
 	}
 	
 	public function otherusers(){
+		
 		
 	}
 }

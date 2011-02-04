@@ -1,5 +1,3 @@
-{% helper userHelper as user %}
-
 <!DOCTYPE html>
 <html>
 	<head>
