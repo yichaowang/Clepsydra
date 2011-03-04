@@ -3,10 +3,10 @@
 	<head>
 		<title>Clepsydra</title>	
 		<link rel="stylesheet" type="text/css" media="screen" href="{{ 'styles/css/master.css'|url }}" />
-		<script type="text/javascript" src="{{ 'javascript/vendor.min.js'|url }}"></script>
+		<script type="text/javascript" src="{{ 'javascript/vendor/mootools-corecompat.js'|url }}"></script>
 		<script type="text/javascript" src="{{ 'javascript/master.js'|url }}"></script>
 	</head>
-	<body onload="updateClock(); setInterval('updateClock()', 1000 )">
+	<body>
 	
 		<div id="header">
 			{% include 'clepsydra/header.tpl' %}

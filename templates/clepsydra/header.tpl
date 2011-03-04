@@ -6,11 +6,10 @@
 						<li><a href="#">Other Users</a></li>
 					</ul>
 					<ul class="nav" id="user_actions">
-						<li><a href="#" onclick="clockin()" id="clock_in" class="{% if user.status %}red{% else %}green{% endif %}">Clock {% if user.status %}out{% else %}in{% endif %}</a></li>
-						<li id="prograss"></li>
+						<li id="clockbtn"><a href="#" id="clock_in" class="green">Clock in</a></li>
 						<li><a href="#">Settings</a></li>
 						<li><a href="{{ 'clepsydra:main/logout'|url }}">Log Out</a></li>
-					</div>
+					</ul>
 					
 				</div>
 			</div>

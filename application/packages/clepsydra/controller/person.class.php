@@ -65,42 +65,39 @@ class person extends \foundry\controller {
 	  <# return value #>
 	*/
 	public function main() {
-		$user = M::init('clepsydra:person')->findByUID(
-			$this->request->authSession->user);
-			
+		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
 		list($y, $m, $w, $d) = array(
 			mktime(0,0,0,1,1,date("Y")),
 			mktime(0,0,0,date("n"),1,date("Y")),
 			strtotime("last Saturday"),
 			strtotime("Today")
 		);
-		
 		foreach( $user->cards as $card ){
 			$j++;
 			if ($card->timein >= $y){
 				$diff = ($card->timeout - $card->timein)/3600;
-				$hour['y'] += $diff;
+				$hour['toyear'] += $diff;
 				if ($card->timein >= $m){
-					$hour['m'] += $diff;
+					$hour['tomonth'] += $diff;
 					if ($card->timein >= $w){
-						$hour['w'] += $diff;
+						$hour['toweek'] += $diff;
 						if ($card->timein >= $d){
-							$hour['d'] += $diff;
+							$hour['today'] += $diff;
 			}}}
 			
 			$tpart[$j] = getdate($card->timein);
 			if ($tpart[$j]['mday'] == $tpart[$j-1]['mday']) {
-				$hourbyday[$j-1]['hours'] += $diff;
 				$j--;
+				$hourbyday[$j]['hours'] += $diff;
+				$hourbyday[$j]['cards'][] = $card; 
 			}else{
 				$hourbyday[$j]['hours'] = $diff;
-				$hourbyday[$j]['weekday']=$tpart[$j]['weekday'];
-				$hourbyday[$j]['mon']=$tpart[$j]['mon'];
+				$hourbyday[$j]['weekday']=substr($tpart[$j]['weekday'],0,3);
 				$hourbyday[$j]['mday']=$tpart[$j]['mday'];
+				$hourbyday[$j]['month']=$tpart[$j]['mon'];
+				$hourbyday[$j]['cards'][] = $card;
 			}}
 		};
-	
-	
 		return array(
 			'hourbyday' => $hourbyday,
 			'hour' => $hour
@@ -109,8 +106,9 @@ class person extends \foundry\controller {
 	
 	// create clock in action
 	public function clockin(){
-		$user = M::init('clepsydra:person')->findByUID(
-			$this->request->authSession->user);
+		if( $this->request->query->type != 'json') {return false;}
+		 
+		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
 			
 		if ( $user->active && $user->track && !$user->status){
 			$user->status=1;
@@ -122,35 +120,75 @@ class person extends \foundry\controller {
 			$card->person_id = $user->uid;
 			$card->save();			
 		}
-
 		//$resp = new \foundry\response\redirect(URL::linkTo('clepsydra:person'));
 		//return $resp;
-		
-		return array();
-		
+		return array(
+				'card' => $card
+			);
 	}
 	
 	// create clock out action
 	public function clockout(){
+		if($this->request->query->type != 'json') {return false;}
+		
+		$card = M::init('clepsydra:card')
+				->where('self:person_id = :pid')
+				->bind(array(':pid' => $this->request->authSession->user))
+				->order('timein desc')
+				->find()
+				->shift();
+				
 		$user = M::init('clepsydra:person')->findByUID(
 			$this->request->authSession->user);
-			
+					
 		if ( $user->active && $user->track && $user->status){
 			$user->status=0;
 			$user->save();
-
-			foreach( $user->cards as $card ) {
-				if ($card->timein == $card->timeout) {
-					$card->timeout = time();
-					$card->person_id = $user->uid;
-					$card->save();
-				}
+			if ($card->timein == $card->timeout) {
+				$card->timeout = time();
+				$card->person_id = $user->uid;
+				$card->save();
 			}
 		}
-		
 		//$resp = new \foundry\response\redirect(URL::linkTo('clepsydra:person'));
 		//return $resp;
-		return array();
+		return array(
+			'card'=> $card
+		);
+	}
+	
+	public function opencard(){
+		if($this->request->query->type != 'json') {return false;}
+		
+		$cards = M::init('clepsydra:card')
+				->where('self:person_id = :pid')
+				->bind(array(':pid' => $this->request->authSession->user))
+				->order('timein desc')
+				->find();
+				
+		foreach( $cards as $card ){
+			$i++;
+			if ($card->timein==$card->timeout){
+				if ($i == 1){
+					$opencard['opencard'] = $card;
+				}else{
+					$j++;
+					$opencard['wrg']['cards'][$j] = $card;
+					$opencard['wrg']['cards'][$j]['ertype'] = "unclosed time card"; 
+				}
+			}
+			
+			if ($card->timeout-$card->timein > 43200){
+				$j++;
+				$opencard['wrg']['cards'][$j] = $card;
+				$opencard['wrg']['cards'][$j]['ertype'] = "time card exceeds 12 hours";
+			}
+		};
+		
+		//if(!isset($opencard)){$opencard['card']=null;};
+		return array(
+			'opencard' => $opencard
+		);
 	}
 	
 	public function otherusers(){
