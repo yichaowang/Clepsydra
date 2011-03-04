@@ -1,0 +1,9 @@
+$hourbydate [
+		[1] => [
+			[wday]
+			[mon]
+			[mday]
+			[hours]
+		]
+
+]

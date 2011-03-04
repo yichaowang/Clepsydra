@@ -1,0 +1,3 @@
+<!--"{% if user.status %}{{ 'clepsydra:person/clockout'|url }}{% else %}{{ 'clepsydra:person/clockin'|url }}{% endif %}"--> 
+
+<li><a href="#" onclick="clockin()" id="clock_in" class="{% if user.status %}red{% else %}green{% endif %}">Clock {% if user.status %}out{% else %}in{% endif %}</a></li>
