@@ -71,7 +71,6 @@ body#login_body {
 	margin: 150px auto 0 auto;
 	-moz-box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 	-webkit-box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-	box-shadow: 10px 10px 5px #888;
 }
 
 	#login p {
@@ -105,8 +104,7 @@ body#login_body {
 		font-size: 12px;
 		text-shadow: 0 1px 0 rgba(255,255,255,0.05);
 		-moz-box-shadow: 0 1px 0 rgba(255,255,255,0.05);
-		-webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.05);
-		box-shadow: 10px 10px 5px #888;
+		-webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.05); 
 	}
 	
 	#login input[type=submit] {
