@@ -3,7 +3,7 @@
 /*
 	clockIn();     	   					Ajax record timecard->timein, then call checkOpenCard()
 	clockOut();         				Ajax record timecard->timeout, then call checkOpenCard()
-	checkOpenCard();    				Ajax check current state, and display info.
+	checkOpenCard();    				Ajax check current state, and display info. Call updateTotalPanel() if is check in.
 		--> displayInfo(jsonObj) 		Display info in the jsonObj. 
 	updateTotalPanel();					Update timer at Total hr panel.
 	updateClock();                  	Update clock.
@@ -117,7 +117,7 @@ var displayTimeDiff = function(id,t,endtext){
 };   
 
 var updateTotalPanel = function(){
-	timer_i=1; 
+	timer_i=1;
 	updateToltime = function(value, id){
 		value = (Number(value)+0.01).toFixed(2);
 		$(id).set('text', value+" hr");
@@ -125,7 +125,7 @@ var updateTotalPanel = function(){
 		timer_i++; 
 		if (timer_i==4){timer_i=1};
 		//console.log(timerids);
-	}
+	}  
 	$('totalhr').getElements('div').getElements('span').each(function(div){
 		if (div.get('id').toString()=="t-today"){
 			displayTimer("t-today", ($time()/1000)-($('t-today').get('html')), 4);
@@ -134,7 +134,7 @@ var updateTotalPanel = function(){
 			var str = div.get('html').toString();
 			updateToltime(str.split(" ",1).toString(),div.get('id').toString());                
 		}
-	});                            
+	});                              
 }; 
 
 var displayTimer = function(id, t, timerid){

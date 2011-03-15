@@ -76,13 +76,16 @@ class person extends \foundry\controller {
 			$j++;
 			if ($card->timein >= $y){
 				$diff = ($card->timeout - $card->timein)/3600;
-				$hour['toyear'] += $diff;
+				$opencardTimeElapsed = ($card->timein==$card->timeout ?  (time()-$card->timein)/3600 : 0);
+
+				$hour['toyear'] += ($diff + $opencardTimeElapsed);
 				if ($card->timein >= $m){
-					$hour['tomonth'] += $diff;
+					$hour['tomonth'] += ($diff + $opencardTimeElapsed);
 					if ($card->timein >= $w){
-						$hour['toweek'] += $diff;
+						$hour['toweek'] += ($diff + $opencardTimeElapsed);
 						if ($card->timein >= $d){
-							$hour['today'] += $diff;
+							$hour['today'] += ($diff + $opencardTimeElapsed);
+						   
 			}}}
 			
 			$tpart[$j] = getdate($card->timein);
