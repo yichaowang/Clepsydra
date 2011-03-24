@@ -54,9 +54,10 @@
 			{% endfor %}
 		</ul>
 	</div>
+	<!--
 	<div class="clear"></div>
 	<div id="grid_12">
-		<!-- test start-->
+		<!-- test start
 		tester: {{ tester }} <br/>
 		helper.tracked: {{ user.track }} <br/>
 		helper.status: {{ user.status }} <br/><br/>
@@ -81,9 +82,9 @@
 			<li>{{ card.timein | date('F jS -- h:i:s A') }} - {{ card.timeout | date('h:i:s A') }} - - - - - - {{ diff//60 }} minutes  </li>
 			{% endif %} 
 		{% endfor %}
-		<!-- test end-->
+		<!-- test end
 		</ul>
 	</div>
-
+    -->
 
 {% endblock %}
