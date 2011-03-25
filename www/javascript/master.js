@@ -28,27 +28,29 @@ var clockIn = function(){
 			fx.set('html','<a>Loading...</a>');
 		},
 		onSuccess: function(jsonObj){
-			$('clockbtn').set('html', '<a href=\"#\" id=\"clock_out\" class=\"red\">Clock out</a>');
+			$('clockbtn').set('html', '<a href=\"#\" id=\"clock_out\" onclick="clockOut()" class=\"red\">Clock out</a>');
 			$('status').set('text', 'Clocked In');
-			$('opencard').set('html','You are now clocked in.');
-			$('timer0tag').set('html','');
-			$('timer0').set('html',''); 
-		    fx.start().chain(function(){
-			   this.start.delay(1000,this,{
-				    'opacity' : [1,0] 
-			   });
-			}).chain(function(){
-		   		   	 	var clock = $('t-today').get('html');
-	 					var tri = clock.split(':');
-	 					var s   = tri[0]*3600+tri[1]*60+tri[2]*1;
-	 					$('t-today').set('text', s);
-						console.log('end');
-						checkOpenCard();
-						this.start({
-	   						'opacity' : 1
-						});
-		   	}) 
-		   
+			var clock = $('t-today').get('html');
+			var tri = clock.split(':');
+			var s   = tri[0]*3600+tri[1]*60+tri[2]*1;
+			$('t-today').set('text', s);
+			updateTotalPanel();						
+			
+			if($('day-list')!=null){
+				$('opencard').set('html','You are now clocked in.');
+				$('timer0tag').set('html','');
+				$('timer0').set('html',''); 
+			    fx.start().chain(function(){
+				   this.start.delay(1000,this,{
+					    'opacity' : [1,0] 
+				   });
+				}).chain(function(){
+							checkOpenCard();
+							this.start({
+		   						'opacity' : 1
+							});
+			   	}) 
+	    	}
 		}
 	}).send()
 }
@@ -59,20 +61,25 @@ var clockOut = function(){
 	var request = new Request.JSON({
 		url: '/index.php/3cabfab8f977ae7d12a3773423acf849/clockout.json?t=' + Math.random(),
 		onRequest: function(){
-			$('opencard').set('text', 'Loading...')
+			if($('day-list')!=null){
+		   		$('opencard').set('text', 'Loading...')
+			}
 		},
 		onSuccess: function(jsonObj){
-			$('status').set('text', 'Clocked Out'); 
-			displayInfo(jsonObj[0].card);
+			$('status').set('text', 'Clocked Out');
+			$('clockbtn').set('html', '<a href=\"#\" id=\"clock_in\" class=\"green\">Clock in</a>');
+			$('clock_in').addEvent('click', clockIn);
+			for (x in timerids){$clear(timerids[x])};
+			if($('day-list')!=null){
+				displayInfo(jsonObj[0].card);
+			}	
 		}
 	}).send()
 	
 	var displayInfo = function(item){
-		for (x in timerids){$clear(timerids[x])};
 		$('opencard').set('text', 'You are now clocked out.');
 		$('timer0tag').set('text', 'Last session: ');
-		$('clockbtn').set('html', '<a href=\"#\" id=\"clock_in\" class=\"green\">Clock in</a>');
-		$('clock_in').addEvent('click', clockIn);   
+     
 	}
 }
 
@@ -91,13 +98,11 @@ var checkOpenCard = function(){
 	var displayInfo = function(item){ 
 		if (typeof item.opencard == 'undefined'){
 			$('opencard').set('text', 'Clocked out');
-			displayTime('t-today', $('t-today').get('html'));
 		}else{
 			$('clockbtn').set('html', '<a href=\"#\" id=\"clock_out\" class=\"red\">Clock out</a>');
 			$('timer0tag').set('text', 'You worked: ');
 			displayTimeDiff('opencard', item.opencard.timein, ' - Current');
 			displayTimer('timer0', item.opencard.timein, 0);
-			//updateTotalPanel();			
 			$('clock_out').addEvent('click', clockOut);
 		}
 		fxli.start({
@@ -118,25 +123,28 @@ var displayTimeDiff = function(id,t,endtext){
 	$(id).set('html', h +':'+ m +' '+apm + endtext);
 };   
 
-var updateTotalPanel = function(){
-	timer_i=1;
-	updateToltime = function(value, id){
-		value = (Number(value)+0.01).toFixed(2);
-		$(id).set('text', value+" hr");
- 		timerids[timer_i]=setTimeout('updateToltime('+value+',"'+id+'")', 36000);
-		timer_i++; 
-		if (timer_i==4){timer_i=1};
-		//console.log(timerids);
-	}  
-	$('totalhr').getElements('div').getElements('span').each(function(div){
-		if (div.get('id').toString()=="t-today"){
-			displayTimer("t-today", ($time()/1000)-($('t-today').get('html')), 4);
-			console.log($('t-today').get('html'));
-		}else{
-			var str = div.get('html').toString();
-			updateToltime(str.split(" ",1).toString(),div.get('id').toString());                
-		}
-	});                              
+var updateTotalPanel = function(){    
+	if ($('status').get('text').trim()=="Clocked In"){
+		timer_i=1;
+		updateToltime = function(value, id){
+			value = (Number(value)+0.01).toFixed(2);
+			$(id).set('text', value+" hr");
+			timerids[timer_i]=setTimeout('updateToltime('+value+',"'+id+'")', 36000);
+			timer_i++; 
+			if (timer_i==4){timer_i=1};
+			//console.log(timerids);
+		}  
+		$('totalhr').getElements('div').getElements('span').each(function(div){
+			if (div.get('id').toString()=="t-today"){
+				displayTimer("t-today", ($time()/1000)-($('t-today').get('html')), 4);
+			}else{
+				var str = div.get('html').toString();
+				updateToltime(str.split(" ",1).toString(),div.get('id').toString());                
+			}
+		});
+	}else{
+		displayTime("t-today",$('t-today').get('html'))
+	}                                 
 }; 
 
 var displayTimer = function(id, t, timerid){
@@ -185,10 +193,12 @@ var updateClock = function(id){
 
 document.addEvent('domready', function() {
 	timerids = []; 	
-	$('clock_in').addEvent('click', clockIn);   
 	updateClock('clock');
-	updateTotalPanel();			
-	checkOpenCard();
+	//if ($('status')=="Clocked In"){updateTotalPanel()};
+	updateTotalPanel();						
+	if($('day-list')!=null){
+		checkOpenCard();
+	} 
 	
 	var Tips1 = new Tips($$('.Tips1'), {
 		initialize:function(){

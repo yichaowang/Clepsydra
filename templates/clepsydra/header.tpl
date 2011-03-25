@@ -10,10 +10,17 @@
 						</li>
 					</ul>
 					<ul class="nav" id="user_actions">
-						<li id="clockbtn"><a href="#" id="clock_in" class="green">Clock in</a></li>
+						<li id="clockbtn">
+							{% if user.status %}
+							<a href="#" id="clock_out" onclick="clockOut()" class="red">Clock out</a>
+							{% else %}
+							<a href="#" id="clock_in" onclick="clockIn()" class="green">Clock in</a> 
+							{% endif %}
+						</li>
 						<li><a href="#">Settings</a></li>
 						<li><a href="{{ 'clepsydra:main/logout'|url }}">Log Out</a></li>
 					</ul>
 					
 				</div>
 			</div>
+			
