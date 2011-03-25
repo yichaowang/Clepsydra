@@ -29,6 +29,7 @@ var clockIn = function(){
 		},
 		onSuccess: function(jsonObj){
 			$('clockbtn').set('html', '<a href=\"#\" id=\"clock_out\" class=\"red\">Clock out</a>');
+			$('status').set('text', 'Clocked In');
 			$('opencard').set('html','You are now clocked in.');
 			$('timer0tag').set('html','');
 			$('timer0').set('html',''); 
@@ -61,6 +62,7 @@ var clockOut = function(){
 			$('opencard').set('text', 'Loading...')
 		},
 		onSuccess: function(jsonObj){
+			$('status').set('text', 'Clocked Out'); 
 			displayInfo(jsonObj[0].card);
 		}
 	}).send()
@@ -95,7 +97,7 @@ var checkOpenCard = function(){
 			$('timer0tag').set('text', 'You worked: ');
 			displayTimeDiff('opencard', item.opencard.timein, ' - Current');
 			displayTimer('timer0', item.opencard.timein, 0);
-			updateTotalPanel();			
+			//updateTotalPanel();			
 			$('clock_out').addEvent('click', clockOut);
 		}
 		fxli.start({
@@ -185,6 +187,7 @@ document.addEvent('domready', function() {
 	timerids = []; 	
 	$('clock_in').addEvent('click', clockIn);   
 	updateClock('clock');
+	updateTotalPanel();			
 	checkOpenCard();
 	
 	var Tips1 = new Tips($$('.Tips1'), {
@@ -202,6 +205,9 @@ document.addEvent('domready', function() {
 			});
 		}
 	});
+});
+
+document.addEvent('domready', function() {
 	
 	// Handles input text replacement
 	$$('.text-replace').each(function(el) {

@@ -59,6 +59,9 @@ class user {
 		
 		$this->user = M::init('clepsydra:person')->findByUID(
 			$this->request->authSession->user);
+			
+		$this->cards = $this->user->cards; 
+	   
 	}
 	
 	/*
@@ -131,6 +134,23 @@ class user {
 	*/
 	public function isAdmin() {
 		return $this->user->is_admin;
+	}
+	
+	/*
+	 Method: lastSession
+	  Calculate the user work time during the most recent session. 
+	 
+	 Access:
+	  public
+	 
+	 Parameters:
+	  _void_
+	 
+	 Returns:
+	  _mixed_
+	*/
+	public function lastSession() {
+	   return $this->user->hourToday();
 	}
 }
 ?>
