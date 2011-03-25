@@ -75,19 +75,7 @@ class person extends \foundry\controller {
 		foreach( $user->cards as $card ){
 			$j++;
 			if ($card->timein >= $y){
-				$diff = ($card->timeout - $card->timein)/3600;
-				$opencardTimeElapsed = ($card->timein==$card->timeout ?  (time()-$card->timein)/3600 : 0);
-
-				$hour['toyear'] += ($diff + $opencardTimeElapsed);
-				if ($card->timein >= $m){
-					$hour['tomonth'] += ($diff + $opencardTimeElapsed);
-					if ($card->timein >= $w){
-						$hour['toweek'] += ($diff + $opencardTimeElapsed);
-						if ($card->timein >= $d){
-							$hour['today'] += ($diff + $opencardTimeElapsed);
-						   
-			}}}
-			
+			 
 			$tpart[$j] = getdate($card->timein);
 			if ($tpart[$j]['mday'] == $tpart[$j-1]['mday']) {
 				$j--;
@@ -100,7 +88,13 @@ class person extends \foundry\controller {
 				$hourbyday[$j]['month']=$tpart[$j]['mon'];
 				$hourbyday[$j]['cards'][] = $card;
 			}}
-		};
+		}; 
+		
+		$hour['today'] = $user->timeTotal("toDay", "second");
+		$hour['toweek'] = $user->timeTotal("toWeek", "hour");
+		$hour['tomonth'] = $user->timeTotal("toMonth", "hour");
+		$hour['toyear'] = $user->timeTotal("toYear", "hour");
+
 		return array(
 			'hourbyday' => $hourbyday,
 			'hour' => $hour
@@ -195,7 +189,11 @@ class person extends \foundry\controller {
 	}
 	
 	public function otherusers(){
-		
+		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
+		echo $user->hourToday();
+		return array(
+			'test' => $asdfasdfadsf
+   		);
 		
 	}
 }

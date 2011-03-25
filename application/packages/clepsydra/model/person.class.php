@@ -108,6 +108,51 @@ class person extends \foundry\model {
 			'var' => 'val'
 		)), true);
 	}
-}
+	
+	public function timeTotal($date, $format="second", $digits=2){
+		switch ($date) {
+			case "toDay": 
+				$k = strtotime("Today");
+				break;
+			case "toWeek": 
+				$k = strtotime("last Saturday");
+				break;
+			case "toMonth": 
+				$k = mktime(0,0,0,date("n"),1,date("Y"));
+				break;
+			case "toYear": 
+				$k = mktime(0,0,0,1,1,date("Y"));
+				break;
+		}
+		
+		switch ($format) {
+			case "second":
+				$j = 1;
+				break;
+			case "minute":
+				$j = 60;
+				break;
+			case "hour":
+				$j = 3600;
+				break;
+		}     
+		
+   		$t = 0; 
+		foreach ($this->cards as $card) {
+			if (!isset($opencardTimeElapsed)){
+				$opencardTimeElapsed = ($card->timein==$card->timeout ?  (time()-$card->timein) : 0); 
+			}
+			if ($card->timein > $k){
+				 $t += $card->timeout - $card->timein; 
+			}
+		}
+		
+		$t += $opencardTimeElapsed; 
+		$t /= $j;
+		$t = number_format($t,$digits,'.','');
+		return $t;       
+	}
+}	
+
 
 ?>

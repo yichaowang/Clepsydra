@@ -1,3 +1,7 @@
+{% if not active %}
+	{% set active %}{% block active %}{% endblock %}{% endset %}
+{% endif %}
+
 <!DOCTYPE html>
 <html>
 	<head>
