@@ -187,6 +187,12 @@ class person extends \foundry\controller {
 			'opencard' => $opencard
 		);
 	}
+	public function others(){
+		$users = M::init('clepsydra:person')->find();
+		return array(
+			'users' => $users
+		);
+	}
 	
 	public function otherusers(){
 		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
