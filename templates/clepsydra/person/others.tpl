@@ -17,7 +17,7 @@
 		<tr> 
 			<td class="name">{{user.name}}</td> 
 			<td>{{user.email}}</td> 
-			<td>{{user.hourToday()}}</td> 
+			<td>{{user.timeTotal('toDay','auto')}}</td> 
 			<td>Hello!</td> 
 		</tr>
 		{%endfor%}
@@ -28,30 +28,7 @@
 			<td>29 Minutes</td> 
 			<td>Hello!</td> 
 		</tr>
-		<tr> 
-			<td class="name">Yichao Wang</td> 
-			<td>wangyic3@msu.edu</td> 
-			<td>3.5 hrs</td> 
-			<td>Hello!</td> 
-		</tr> 
-		<tr class="alt"> 
-			<td class="name">Ryan Mcbride</td> 
-			<td>ryan@msu.edu</td> 
-			<td>29 Minutes</td> 
-			<td>Hello!</td> 
-		</tr>
-		<tr> 
-			<td class="name">Yichao Wang</td> 
-			<td>wangyic3@msu.edu</td> 
-			<td>3.5 hrs</td> 
-			<td>Hello!</td> 
-		</tr> 
-		<tr class="alt"> 
-			<td class="name">Ryan Mcbride</td> 
-			<td>ryan@msu.edu</td> 
-			<td>29 Minutes</td> 
-			<td>Hello!</td> 
-		</tr>
+		
 	   
 		</table>
 	</div>

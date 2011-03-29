@@ -66,37 +66,16 @@ class person extends \foundry\controller {
 	*/
 	public function main() {
 		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
-		list($y, $m, $w, $d) = array(
-			mktime(0,0,0,1,1,date("Y")),
-			mktime(0,0,0,date("n"),1,date("Y")),
-			strtotime("last Saturday"),
-			strtotime("Today")
-		);
-		foreach( $user->cards as $card ){
-			$j++;
-			if ($card->timein >= $y){
-			 
-			$tpart[$j] = getdate($card->timein);
-			if ($tpart[$j]['mday'] == $tpart[$j-1]['mday']) {
-				$j--;
-				$hourbyday[$j]['hours'] += $diff;
-				$hourbyday[$j]['cards'][] = $card; 
-			}else{
-				$hourbyday[$j]['hours'] = $diff;
-				$hourbyday[$j]['weekday']=substr($tpart[$j]['weekday'],0,3);
-				$hourbyday[$j]['mday']=$tpart[$j]['mday'];
-				$hourbyday[$j]['month']=$tpart[$j]['mon'];
-				$hourbyday[$j]['cards'][] = $card;
-			}}
-		}; 
+		
+		$timebyday = $user->timeByDay();
 		
 		$hour['today'] = $user->timeTotal("toDay", "second");
 		$hour['toweek'] = $user->timeTotal("toWeek", "hour");
 		$hour['tomonth'] = $user->timeTotal("toMonth", "hour");
 		$hour['toyear'] = $user->timeTotal("toYear", "hour");
-
+		
 		return array(
-			'hourbyday' => $hourbyday,
+			'hourbyday' => $timebyday,
 			'hour' => $hour
 		);
 	}
@@ -189,8 +168,16 @@ class person extends \foundry\controller {
 	}
 	public function others(){
 		$users = M::init('clepsydra:person')->find();
+		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
+		$hour['today'] = $user->timeTotal("toDay", "second");
+		$hour['toweek'] = $user->timeTotal("toWeek", "hour");
+		$hour['tomonth'] = $user->timeTotal("toMonth", "hour");
+		$hour['toyear'] = $user->timeTotal("toYear", "hour");
+		
 		return array(
-			'users' => $users
+			'users' => $users,
+			'hour' => $hour
+			
 		);
 	}
 	

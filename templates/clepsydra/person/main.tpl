@@ -15,13 +15,16 @@
 			
 			{% for day in hourbyday %}
 				<li class="Tips1" title="On that day, you worked: ::
-				{% for card in day.cards %}{% set diff = card.timeout - card.timein %}
-				{% if card.timein != card.timeout %}
-				{{card.timein | date('h:i:s')}} - {{card.timeout | date('h:i:s A')}} | {{ diff//36/100 }} Hrs<br/>
-				{% endif %}
+				{% for card in day.cards %}
+					{% if card.timein != card.timeout %}
+						{% set diff = card.timeout - card.timein %}
+						{{card.timein | date('h:i:s')}} - {{card.timeout | date('h:i:s A')}} | {{ diff//36/100 }} hrs<br/> 
+					{% else %}
+						{{card.timein | date('h:i:s')}} - Now<br/>  
+					{% endif %}
 				{% endfor %}">
 					<em>{{ day.weekday }}. {{ day.month }}/{{ day.mday }}</em><br/>
-					<span>{{ day.hours//0.01/100 }} hr</span> 
+					<span>{{ day.time }}</span> 
 				</li>
 			{% endfor %}
 		</ul>
