@@ -17,20 +17,23 @@
 			{% include 'clepsydra/header.tpl' %}
 		</div>
 		
-		<div class="container_12">
+		<div id="main" class="container_12">
 			<div class="grid_6 alpha">
 				<h1>Welcome Back, {{ user.name }}.</h1>
 				<em>Status:</em>
 				<span id="status">
-				{% if user.track %}
+				{% if user.track == 1 and user.active == 1%}
 					Clocked {% if user.status %}In{% else %}Out{% endif %}
-				{% else %}
+				{% elseif user.track == 0 and user.active ==1 %}
 					Your time isn't tracked.
+				{% elseif user.active == 0 %}
+					You are currently inactive.
 				{% endif %}
 				</span>
 				&nbsp;&nbsp;&nbsp;&nbsp;
 				<em>Currently:</em> <span id="clock">Fetching time</span>
 			</div>
+			{% if user.track == 1 and user.active == 1 %}
 			<div id="totalhr" class="grid_6 omega">
 				<div class="dark round">
 					<em>This Year</em>
@@ -49,6 +52,7 @@
 					<span id="t-today">{{hour.today}}</span>
 				</div>
 			</div>
+			{% endif %}
 			<div class="clear"></div>
 			{% block content %}{% endblock %}
 		</div>
