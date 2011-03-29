@@ -65,7 +65,11 @@ class person extends \foundry\controller {
 	  <# return value #>
 	*/
 	public function main() {
-		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
+		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user); 
+		
+		if ($user->active==0 || $user->track==0) { 
+			return array();
+		}
 		
 		$timebyday = $user->timeByDay();
 		
@@ -82,9 +86,15 @@ class person extends \foundry\controller {
 	
 	// create clock in action
 	public function clockin(){
-		if( $this->request->query->type != 'json') {return false;}
-		 
+		if ($this->request->query->type != 'json') {
+			return false;
+		}
+
 		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
+		
+		if ($user->active==0 || $user->track==0 || $user->status==1) { 
+			return false;
+		}
 			
 		if ( $user->active && $user->track && !$user->status){
 			$user->status=1;
@@ -105,17 +115,21 @@ class person extends \foundry\controller {
 	
 	// create clock out action
 	public function clockout(){
-		if($this->request->query->type != 'json') {return false;}
+		if($this->request->query->type != 'json') {return false;} 
+		
+		$user = M::init('clepsydra:person')->findByUID(
+			$this->request->authSession->user);     	
+	   	
+	   	if ($user->active==0 || $user->track==0 || $user->status==0) { 
+			return false;
+		} 
 		
 		$card = M::init('clepsydra:card')
 				->where('self:person_id = :pid')
 				->bind(array(':pid' => $this->request->authSession->user))
-				->order('timein desc')
+				->order('self:timein desc')
 				->find()
 				->shift();
-				
-		$user = M::init('clepsydra:person')->findByUID(
-			$this->request->authSession->user);
 					
 		if ( $user->active && $user->track && $user->status){
 			$user->status=0;
@@ -124,17 +138,27 @@ class person extends \foundry\controller {
 				$card->timeout = time();
 				$card->person_id = $user->uid;
 				$card->save();
+			}else{
+				//**** need work to determine when the last card is not the opencard
 			}
 		}
-		//$resp = new \foundry\response\redirect(URL::linkTo('clepsydra:person'));
-		//return $resp;
+
 		return array(
 			'card'=> $card
 		);
 	}
 	
 	public function opencard(){
-		if($this->request->query->type != 'json') {return false;}
+		if($this->request->query->type != 'json') {
+			return false;
+		}
+		
+		$user = M::init('clepsydra:person')->findByUID(
+			$this->request->authSession->user);
+		
+		if ($user->active==0 || $user->track==0) { 
+			return array();
+		} 
 		
 		$cards = M::init('clepsydra:card')
 				->where('self:person_id = :pid')
@@ -161,13 +185,16 @@ class person extends \foundry\controller {
 			}
 		};
 		
-		//if(!isset($opencard)){$opencard['card']=null;};
 		return array(
 			'opencard' => $opencard
 		);
-	}
+	} 
+	
 	public function others(){
-		$users = M::init('clepsydra:person')->find();
+		$users = M::init('clepsydra:person')
+					->order('self:status desc') 
+					->find(); 
+					
 		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
 		$hour['today'] = $user->timeTotal("toDay", "second");
 		$hour['toweek'] = $user->timeTotal("toWeek", "hour");
@@ -181,13 +208,21 @@ class person extends \foundry\controller {
 		);
 	}
 	
-	public function otherusers(){
+	public function admin(){
+		$users = M::init('clepsydra:person')
+			->order('self:status desc') 
+			->find();
 		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
-		echo $user->hourToday();
+		$hour['today'] = $user->timeTotal("toDay", "second");
+		$hour['toweek'] = $user->timeTotal("toWeek", "hour");
+		$hour['tomonth'] = $user->timeTotal("toMonth", "hour");
+		$hour['toyear'] = $user->timeTotal("toYear", "hour");
+
 		return array(
-			'test' => $asdfasdfadsf
-   		);
-		
+			'users' => $users,
+			'hour' => $hour
+
+			);
 	}
 }
 

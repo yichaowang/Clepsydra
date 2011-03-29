@@ -15,21 +15,17 @@
 		</tr> 
 		{%for user in users%}
 		<tr> 
-			<td class="name">{{user.name}}</td> 
+			<td class="name">{{user.name}} 
+				{% if user.status == 0 %}<img src="{{ 'styles/img/icon_offline.png'|url }}"/>
+				{% else %} <img src="{{ 'styles/img/icon_online.png'|url }}"/>  
+				{% endif %}
+			</td> 
 			<td>{{user.email}}</td> 
-			<td>{{user.timeTotal('toDay','auto')}}</td> 
-			<td>Hello!</td> 
+			<td>{% if user.status == 1 %}{{user.timeTotal('toDay','auto')}}{% endif %}</td> 
+			<td>{% if user.status == 1 %}<img src="{{ 'styles/img/icon_talk.png'|url }}"/>{% endif %}</td> 
 		</tr>
 		{%endfor%}
-		 
-		<tr class="alt"> 
-			<td class="name">Ryan Mcbride</td> 
-			<td>ryan@msu.edu</td> 
-			<td>29 Minutes</td> 
-			<td>Hello!</td> 
-		</tr>
-		
-	   
+	     
 		</table>
 	</div>
 </div>	
