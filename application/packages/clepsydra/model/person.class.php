@@ -109,7 +109,7 @@ class person extends \foundry\model {
 		)), true);
 	}
 	
-	public function timeTotal($date, $format="second", $digits=2){
+	public function timeTotal($date, $format="second", $digits=2, $unit=""){
 		switch ($date) {
 			case "toDay": 
 				$k = strtotime("Today");
@@ -135,6 +135,9 @@ class person extends \foundry\model {
 			case "hour":
 				$j = 3600;
 				break;
+			case "auto":
+				$j = "auto";
+				break;
 		}     
 		
    		$t = 0; 
@@ -148,9 +151,69 @@ class person extends \foundry\model {
 		}
 		
 		$t += $opencardTimeElapsed; 
-		$t /= $j;
+		if ($j=="auto") {
+			if ($t < 60) {
+				$unit = "secs";
+			}elseif ($t < 3600){
+				$t /= 60;
+				$unit = "mins"; 
+			}elseif ($t >= 3600){
+				$t /= 3600;
+				$unit = "hrs";
+			}
+		}else{
+			$t /= $j;
+		}
 		$t = number_format($t,$digits,'.','');
-		return $t;       
+		return $t." ".$unit;       
+	}  
+	
+	Public function timeByDay(){
+		$j=0;
+		foreach( $this->cards as $card ){ 
+			$diff = ($card->timeout - $card->timein);
+			$j++;
+			$tpart[$j] = getdate($card->timein);
+			
+			//considering the opencard
+			if (!isset($opencardTimeElapsed)){
+				$opencardTimeElapsed = ($card->timein==$card->timeout ?  (time()-$card->timein) : 0);
+				$t[$j]['time'] 	 = $opencardTimeElapsed;
+			}
+			
+			if ($tpart[$j]['mday'] == $tpart[$j-1]['mday']) {
+				$j--;
+				$t[$j]['time'] 	 += $diff;
+				$t[$j]['cards'][] = $card;
+			}else{
+				$t[$j]['time']    += $diff;
+				$t[$j]['weekday'] = substr($tpart[$j]['weekday'],0,3);
+				$t[$j]['mday']    = $tpart[$j]['mday'];
+				$t[$j]['month']   = $tpart[$j]['mon'];
+				$t[$j]['cards'][] = $card;     
+			}
+		  
+		}
+		
+		$h=0;
+		foreach($t as $n){
+			$h++;
+			$m = $n['time'];
+			if ($m < 60) {
+				$unit = "secs";
+			}elseif ($m < 3600){
+				$m /= 60;
+				$unit = "mins"; 
+			}elseif ($m >= 3600){
+				$m /= 3600;
+				$unit = "hrs";
+			}
+			$m = number_format($m,0,'.','');
+			$m = $m." ".$unit; 
+			$t[$h]['time']=$m;
+		}
+
+		return $t;
 	}
 }	
 
