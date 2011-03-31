@@ -207,23 +207,6 @@ class person extends \foundry\controller {
 			
 		);
 	}
-	
-	public function admin(){
-		$users = M::init('clepsydra:person')
-			->order('self:status desc') 
-			->find();
-		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
-		$hour['today'] = $user->timeTotal("toDay", "second");
-		$hour['toweek'] = $user->timeTotal("toWeek", "hour");
-		$hour['tomonth'] = $user->timeTotal("toMonth", "hour");
-		$hour['toyear'] = $user->timeTotal("toYear", "hour");
-
-		return array(
-			'users' => $users,
-			'hour' => $hour
-
-			);
-	}
 }
 
 ?>

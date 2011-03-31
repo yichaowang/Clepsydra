@@ -404,10 +404,10 @@ table tr.alt{
 }
 
 table td{
-	padding:10px 6px 10px 6px;
+	padding:1px 2px;
 	border-bottom: solid #333 1px;	
 }
-	td img { 
+	table td img { 
 		vertical-align: bottom; 
 	}
 
@@ -416,7 +416,7 @@ table th{
 }
 
     table#others{
-		width:800px; 
+		min-width:800px; 
 		margin-left: auto;
 		margin-right: auto;
 	}
@@ -426,10 +426,24 @@ table th{
 			vertical-align:middle;
 		}
 		
+		table#others td{
+			padding:10px 6px 10px 6px;
+		}
+		
 		table#others .name{
 			color:#fff;
 			//background-color: rgba(70,70,70, 0.1);
 		 	font-size:1.4em;
+		} 
+		
+	table#admin-others{
+		width:600px;
+		font-size:1.1em;
+		color:#555;
+		text-shadow: 0 1px 0px rgba(0,0,0,1);
+	}
+		table#admin-others tr.in{
+			color:#ccc;	
 		}
 			
 /* Misc Formatting */
