@@ -19,7 +19,7 @@ class package {
 				'clepsydra:main' => 'main/:action',
 				'clepsydra:person' => 
 					'3cabfab8f977ae7d12a3773423acf849/:action',
-				'clepsydra:admin' => 'null',
+				'clepsydra:admin' => 'admin/:action',
 				'clepsydra:setting' => 'null',
 				'clepsydra:export' => 'null'
 			);
@@ -32,7 +32,8 @@ class package {
 		return array(
 			'version'	=> '1.0Alpha (Build: 20101221)',
 			'requiresAuth' => array(
-				'clepsydra:person'
+				'clepsydra:person',
+				'clepsydra:admin'
 			)
 		);
 	}

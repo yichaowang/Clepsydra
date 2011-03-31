@@ -78,7 +78,6 @@ class person extends \foundry\model {
 		'track',
 		'locked',
 		'attempts'
-
 	);
 
 	public function __construct($self=false, $ns=false, $handler=false) {
