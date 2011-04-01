@@ -8,7 +8,7 @@
 	<div class="grid_12 alpha omega">
 		<table id="others" cellspacing="0" summary="Colleagues at State News."> 
 		<tr> 
-			<th width="50%"></th> 
+			<th></th> 
 			<th>Email</th> 
 			<th>Has been<br> here for </th> 
 			<th>Talk to<br> him/her</th> 
