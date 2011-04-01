@@ -70,6 +70,7 @@ class person extends \foundry\model {
 		'email',
 		'salt',
 		'password',
+		'department',
 		'pin',
 		'phone',
 		'active',

@@ -41,6 +41,7 @@ body#login_body {
 
 div.container_12 {
 	font-size: 1.2em;
+	
 }   
 
 #header {
@@ -395,7 +396,6 @@ tool-tip {
 table{
 	font-size:1.2em;
 	line-height:2em;
-	margin-top: 50px;
 	color:#ddd;	
 }
 
@@ -412,16 +412,15 @@ table td{
 	}
 
 table th{
-	padding:0px 6px 15px 6px;
 }
 
     table#others{
-		min-width:800px; 
-		margin-left: auto;
-		margin-right: auto;
+		width:800px;
+		margin:50px auto;
 	}
 		table#others th{
 			color:#777;
+			padding:0px 6px 15px 6px;
 			line-height:1em;
 			vertical-align:middle;
 		}
@@ -437,9 +436,11 @@ table th{
 		} 
 		
 	table#admin-others{
-		width:600px;
+		width:940px;
 		font-size:1.1em;
-		color:#555;
+		margin-left: auto;
+		margin-right: auto;
+		color:#444;
 		text-shadow: 0 1px 0px rgba(0,0,0,1);
 	}
 		table#admin-others tr.in{
@@ -486,4 +487,28 @@ h2, table caption {
 	background: -webkit-gradient(linear, left top, left bottom, from(#df7777), to(#ae5d5d), color-stop(1%, rgba(255,255,255,0.5)), color-stop(2%, #df7777)) #ae5d5d;
 	background: -moz-linear-gradient(top, #ae5d5d, rgba(255,255,255,0.5) 1%, #df7777 2%, #ae5d5d) #df7777;
 }
+
+/*control*/
+div.control {
+	color:rgba(0,0,0,0.6);
+	font-weight:700;
+	background-color:rgba(255,255,255,0.05);
+	line-height:1.9em;
+	padding-top:1px;
+	border-top:solid #444 1px;
+	border-bottom:solid #444 1px;
+	margin:30px 0 20px 0;
+	text-shadow: 0 1px 0px rgba(255,255,255,0.1);
+}
+
+	div.control .title{
+		padding-left:5px;
+	}
+	
+	div.control input[type='text']{
+		color:#fff;
+		margin:0px 12px 0 5px;
+		background-color:rgba(0,0,0,0.26);
+		border:solid #666 1px;
+	}
 		

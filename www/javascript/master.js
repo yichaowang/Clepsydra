@@ -191,6 +191,45 @@ var updateClock = function(id){
 }
 
 
+
+document.addEvent('domready', function(){
+	if($('admin-others')==null){
+		return;
+	}
+	
+	$$('table#admin-others tr:even').addClass('alt');
+	//
+	
+	if($('crud-controll')==null){
+		return;
+	};
+	
+	var fetchform = Slick.find(document, '#add-user + input').addEvent('keyup', function(e){
+		console.log(this.value.length);
+		
+		//if (this.value.length <= 3) return false;
+		if (this.value.length == 3 && $('new')==null){
+			console.log('go');
+			
+			new Request.HTML({
+				url: '/index.php/admin/adduser',
+				onRequest: function(){
+                	$('crud-form').set('text', 'loading...');
+				},
+				onComplete: function(response){
+                	$('crud-form').empty().adopt(response);
+				}			
+			}).post({'name-transfer': this.value});
+		}
+		
+		if ($('new')!=null){
+			$('name-transfer').value = Slick.find(document, '#add-user + input').value
+		} 
+			    
+	});
+});
+
+
 document.addEvent('domready', function() {
 	timerids = []; 	
 	updateClock('clock');
@@ -215,6 +254,10 @@ document.addEvent('domready', function() {
 			});
 		}
 	});
+
+	if($$('table#others')!=null){
+		$$('table#others tr:even').addClass('alt');
+	}
 });
 
 document.addEvent('domready', function() {
