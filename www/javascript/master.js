@@ -191,7 +191,7 @@ var updateClock = function(id){
 }
 
 
-
+//admin page
 document.addEvent('domready', function(){
 	if($('admin-others')==null){
 		return;
@@ -204,28 +204,24 @@ document.addEvent('domready', function(){
 		return;
 	};
 	
-	var fetchform = Slick.find(document, '#add-user + input').addEvent('keyup', function(e){
-		console.log(this.value.length);
-		
-		//if (this.value.length <= 3) return false;
-		if (this.value.length == 3 && $('new')==null){
-			console.log('go');
-			
+	var fetchform = Slick.find(document, '#add-user + input').addEvent('keyup', function(e){		
+		if (this.value.length == 3 && $('new')==null){			
+		    new Fx.Scroll(document.body).toElement($('crud-controll'));
 			new Request.HTML({
-				url: '/index.php/admin/adduser',
+				url: '/index.php/admin/userform',
 				onRequest: function(){
                 	$('crud-form').set('text', 'loading...');
 				},
 				onComplete: function(response){
                 	$('crud-form').empty().adopt(response);
 				}			
-			}).post({'name-transfer': this.value});
+			}).post({'add': this.value});
 		}
-		
-		if ($('new')!=null){
-			$('name-transfer').value = Slick.find(document, '#add-user + input').value
-		} 
-			    
+		if ($('userform')!=null){
+			if ($('form-type').get('text')=="Add new person:"){
+				$('uname').value = Slick.find(document, '#add-user + input').value
+			} 
+		}        
 	});
 });
 

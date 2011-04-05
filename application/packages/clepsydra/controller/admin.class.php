@@ -101,12 +101,12 @@ class admin extends \foundry\controller {
 	 Returns:
 	  <# return value #>
 	*/
-    public function adduser(){
-		if ($this->request->post('name-transfer', 'specialChars')){
+    public function userform(){
+		if ($this->request->post('add', 'specialChars')){
 			
-			$name = $this->request->post('name-transfer', 'specialChars');		
+			$uname = $this->request->post('add', 'specialChars');		
 			return array(
-				'name' => $name
+				'uname' => $uname
 			);
 		};
 		
@@ -126,7 +126,8 @@ class admin extends \foundry\controller {
 		};
 		
 		if( $person && $_POST && !empty($_POST) ) {
-			$person->name = $this->request->post('username', 'specialChars');
+		
+			$person->name = $this->request->post('uname', 'specialChars');
 			$person->email = $this->request->post('email', 'email');
 			$person->password = $this->request->post('password', 'specialChars');
 			$person->department = $this->request->post('department', 'specialChars');

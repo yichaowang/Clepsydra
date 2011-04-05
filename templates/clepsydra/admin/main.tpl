@@ -33,7 +33,7 @@
 			<td>{{user.timeTotal('toYear','auto')}} </td>  
 			<td>{% if user.status == 1 %}<img src="{{ 'styles/img/icon_talk.png'|url }}"/>{% endif %}</td> 
 		</tr>
-		{%endfor%}
+		{%endfor%}                        
 		</table>
 	</div>
 	
