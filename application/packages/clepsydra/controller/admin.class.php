@@ -73,7 +73,7 @@ class admin extends \foundry\controller {
 		}
 		
 		$users = M::init('clepsydra:person')
-			->order('self:status desc') 
+			->order('self:name asc') 
 			->find();
 
 				
@@ -102,44 +102,55 @@ class admin extends \foundry\controller {
 	  <# return value #>
 	*/
     public function userform(){
-		if ($this->request->post('add', 'specialChars')){
-			
-			$uname = $this->request->post('add', 'specialChars');		
+		$id = $this->request->get('id', 'num');
+		$uname = $this->request->post('uname', 'specialChars');
+		if ($id){
+			$person = M::init('clepsydra:person')->findByUID($id);
+			return array(
+				'person'=> $person
+			);
+		} elseif ($uname){
 			return array(
 				'uname' => $uname
 			);
-		};
-		
-		if( $this->request->post('email', 'specialChars') ){
-			
-		}; 
+		}
 	   
 	}
 	
 	public function edit(){
-		$id = $this->request->get(':uid', 'num');
+		$id = $this->request->get('id', 'num');
 		
-		if( $id ) {
+		if ($id) {
 			$person = M::init('clepsydra:person')->findByUID($id);
 		} else {
 			$person = M::init('clepsydra:person');
 		};
 		
 		if( $person && $_POST && !empty($_POST) ) {
-		
-			$person->name = $this->request->post('uname', 'specialChars');
-			$person->email = $this->request->post('email', 'email');
-			$person->password = $this->request->post('password', 'specialChars');
+			$person->password   = $this->request->post('password', 'specialChars');
+			$person->passwordc  = $this->request->post('passwordc', 'specialChars'); 
+			
+			//if ($person->password!=$person->passwordc){
+			//	return $resp;
+			//}             
+			
+			$person->name       = $this->request->post('uname', 'specialChars');
+			$person->email      = $this->request->post('email', 'email');
 			$person->department = $this->request->post('department', 'specialChars');
-			$person->active = $this->request->post('active', 'num');
-			$person->track = $this->request->post('track', 'num');
-			$person->is_admin = $this->request->post('is_admin', 'num');
+			$person->pin		= $this->request->post('pin', 'num');
+			$person->phone      = $this->request->post('phone', 'num');
+			$person->is_admin 	= $this->request->post('admin', 'num'); 
+			$person->active     = $this->request->post('active', 'num');
+			$person->track      = $this->request->post('track', 'num');
+			$person->status		= $this->request->post('status', 'num');
+			$person->locked		= $this->request->post('locked', 'num');
+			$person->attempts 	= $this->request->post('attempts', 'num');
 			
 			$person->save();
 			
 			$resp = new Redir(URL::linkTo(URL::build(
 					'clepsydra:admin', array(
-						'message' => 'Person saved',
+						'message' => $this->request->post('active', 'num'),
 						'type' => 'success'
 					))));	
 
