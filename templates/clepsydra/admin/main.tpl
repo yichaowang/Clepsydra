@@ -5,16 +5,16 @@
 
 {% block content %}
 <div id="frame">	
-   	<div id="name" class="control grid_12 alpha omega">
+   	<div class="control grid_12 alpha omega">
 	  	<span class="title">SORT BY:</span>
-	  	<span>
+		<a id="edit-mode" class="button">Edit mode</a>   	
 	</div>
 	<div class="grid_12 alpha omega">
 		<div id="message">
 			  message: {{message}}
 		</div>
 		<table id="admin-others" cellspacing="0" summary="Colleagues at State News.">
-		<tr>
+		<tr class="title">
 			<th>NAME</th> 
 			<th>EMAIL</td>
 			<th>TODAY</th>
@@ -24,7 +24,7 @@
 			<th>CHAT</th>	
 		<tr>		 
 		{%for user in users%}
-		<tr {% if user.status == 1 %} class="in" {% endif %}> 
+		<tr {% if user.status == 1 %} class="in" {% endif %} id="{{user.uid}}"> 
 			<td>{{user.name}}</td> 
 			<td>{{user.email}}</td> 
 			<td>{{user.timeTotal('toDay','auto')}}  </td>
@@ -39,8 +39,6 @@
 	
 	<div id="crud-controll" class="control grid_12 alpha omega">
 		<span class="title" id="add-user">ADD NEW:</span>
-		<input type="text" size="20" />
-		<span class="title" id="edit-user">EDIT:</span>
 		<input type="text" size="20" />
 	</div>
 	<div id="crud-form" class="grid_8 alpha ">

@@ -198,24 +198,60 @@ document.addEvent('domready', function(){
 	}
 	
 	$$('table#admin-others tr:even').addClass('alt');
-	//
+	
+	if($('edit-mode')!=null){
+		$('edit-mode').addEvent('click', function(){
+			if ($('edit-mode').hasClass('clicked')){
+				$('edit-mode').removeClass('clicked');
+				$$('#admin-others tr[class!=title]').each(function(el){
+					if (!el.hasClass('in')){
+						el.tween('color','#444');
+					}
+					el.removeEvents();					
+				});
+				
+			}else{
+				$('edit-mode').addClass('clicked')
+				$$('#admin-others tr[class!=title]').each(function(el){
+					el.tween('color','#ddd');
+					el.addEvents({
+				   		mouseover: function() {el.addClass('uselect')},
+					   	mouseout: function() {el.removeClass('uselect')},
+						click: function(){
+						   	new Request.HTML({
+                            	url: '/index.php/admin/userform',
+								onRequest: function(){
+									$('crud-form').set('text', 'loading...');
+								},
+								onComplete: function(response){
+									$('crud-form').empty().adopt(response);
+									//new Fx.Scroll(document.body).toElement($('crud-controll'));			
+								}
+						    }).get({'id':el.get('id')});
+						}
+					});
+				});  			
+			}				
+		}); 
+	}
 	
 	if($('crud-controll')==null){
 		return;
 	};
 	
-	var fetchform = Slick.find(document, '#add-user + input').addEvent('keyup', function(e){		
-		if (this.value.length == 3 && $('new')==null){			
-		    new Fx.Scroll(document.body).toElement($('crud-controll'));
-			new Request.HTML({
-				url: '/index.php/admin/userform',
-				onRequest: function(){
-                	$('crud-form').set('text', 'loading...');
-				},
-				onComplete: function(response){
-                	$('crud-form').empty().adopt(response);
-				}			
-			}).post({'add': this.value});
+	var fetchform = $$('#add-user + input').addEvent('keyup', function(e){		
+		if (this.value.length >= 3 && $('userform-create')==null){
+				//new Fx.Scroll(document.body).toElement($('crud-controll'));			
+				new Request.HTML({
+					url: '/index.php/admin/userform',
+					onRequest: function(){
+	                	$('crud-form').set('text', 'loading...');
+					},
+					onComplete: function(response){
+	                	$('crud-form').empty().adopt(response);
+					}			
+				}).post({'uname': this.value});
+			   		
 		}
 		if ($('userform')!=null){
 			if ($('form-type').get('text')=="Add new person:"){
@@ -223,6 +259,7 @@ document.addEvent('domready', function(){
 			} 
 		}        
 	});
+	
 });
 
 
