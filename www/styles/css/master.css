@@ -348,7 +348,9 @@ canvas {
 				bottom: -3px;
 			}
 	
-/* --- Tips --- */
+/* 
+	Tips 
+*/
 tool-tip {
 	color: #fff;
 	width: 139px;
@@ -391,7 +393,10 @@ tool-tip {
 			padding: 4px 8px 8px;
 			background: #CFDFA7;
 		} 
-/*  Tables */
+
+/*  
+	Tables 
+*/
 
 table{
 	font-size:1.2em;
@@ -403,7 +408,7 @@ table tr.alt{
 	background-color: #2a2a2a;
 }
 
-table tr.uselect{
+table tr.shade{
 	background-color: #222;
 	cursor: pointer;
 }
@@ -451,8 +456,174 @@ table th{
 		table#admin-others tr.in{
 			color:#ccc;	
 		}
+/*
+	user form
+*/
+form{
+}	
+	    
+	form fieldset {
+	  margin-bottom: 10px;
+	}
+	
+		form fieldset ol {
+		  margin: 0;
+		  padding: 0;
+		}
+		
+		form fieldset li {
+		  padding: 1px 0;  
+		}
+		
+		form fieldset input[type=text], form fieldset input[type=password ] {
+			background: rgba(0,0,0,0.2);
+			border: 1px solid rgba(0,0,0,0.2);
+			color: #fff;
+			text-shadow: 0 1px 0 rgba(255,255,255,0.05);
+			-moz-box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+			-webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.05); 
+		} 
+		
+		form fieldset legend{
+			padding-bottom:10px;
+		}   
+		
+		form fieldset fieldset {
+		  border: none;
+		  margin: 3px 0 0;
+		}
+			form fieldset fieldset legend {
+			  padding: 0 0 5px;
+			  font-weight: normal;
+			}
+			form fieldset fieldset label {
+			  display: block;
+			  width: auto;
+			  margin-left: 123px;
+			}
 			
-/* Misc Formatting */
+	form div.title { 
+		font-size:1.1em;
+		margin-bottom:10px;   
+		
+	}     
+
+	form label {
+	  display: inline-block;
+	  line-height: 1.8;
+	  vertical-align: top;
+	}
+	
+	form.userform input[type=submit] {
+		margin:5px 15px;
+		cursor:pointer;
+	}
+	
+	form input[type=button] {
+		background:none;
+		color:#fff;
+		border:none;
+		margin:0 5px 0 0;
+		cursor:pointer;
+	}      
+
+	form em {
+	  font-weight: bold;
+	  font-style: normal;
+	  color: #f00;
+	} 
+	
+	form label {
+	  width: 170px; 
+	}   
+
+form.userform{
+	border-right: 1px solid rgba(0,0,0,0.2);
+	-moz-box-shadow: 1px 0 0 rgba(255,255,255,0.05);
+	-webkit-box-shadow: 1px 0 0 rgba(255,255,255,0.05);
+}
+
+form.userform fieldset.submit{
+	float:right;
+}	
+ 
+		
+
+/*
+	control
+*/
+div.control {
+	color:rgba(0,0,0,0.6);
+	font-weight:700;
+	background-color:rgba(255,255,255,0.05);
+	line-height:1.8em;
+	padding:1px 0;
+	border-top:solid #444 1px;
+	border-bottom:solid #444 1px;
+	margin:30px 0 20px 0;
+	text-shadow: 0 1px 0px rgba(255,255,255,0.1);
+}     
+
+   	/*
+   		caption
+   	*/
+	div.control .title{
+		padding-left:5px;
+	}          
+
+	/*
+		button
+	*/
+	div.control a{
+		font-weight:400;
+		padding: 0 7px;
+		text-decoration:none;
+	}
+
+	div.control a.button{
+		color:#fff;
+		margin:0px 12px 0 5px;
+		background: -moz-linear-gradient(top, #414141 0%, #313131 100%); 
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#414141), color-stop(100%,#313131));
+		border:solid #252525 1px;
+		cursor: pointer;
+	}
+		div.control a#edit-mode{
+			float:right;
+		}
+
+	div.control a.button:hover{
+		background: -moz-linear-gradient(top, #454545 0%, #353535 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#454545), color-stop(100%,#353535));
+	}
+
+	div.control a.button.clicked{
+		background: -moz-linear-gradient(top, #313131 0%, #414141 100%); 
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#313131), color-stop(100%,#414141));
+		border:solid #19811a 1px; 
+	}
+
+	div.control a.button.clicked:hover{
+		background: -moz-linear-gradient(top, #353535 0%, #454545 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#353535), color-stop(100%,#454545));
+	}	
+	/*
+		input
+	*/
+	div.control input[type='text']{
+		background: rgba(0,0,0,0.2);
+		border: 1px solid rgba(0,0,0,0.2);
+		color: #fff;
+		text-shadow: 0 1px 0 rgba(255,255,255,0.05);
+		-moz-box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+		-webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.05);;
+	}
+               
+
+			
+/* 
+	Misc Formatting 
+*/
 
 em {
 	color: #515051;
@@ -493,66 +664,5 @@ h2, table caption {
 	background: -moz-linear-gradient(top, #ae5d5d, rgba(255,255,255,0.5) 1%, #df7777 2%, #ae5d5d) #df7777;
 }
 
-/*control*/
-div.control {
-	color:rgba(0,0,0,0.6);
-	font-weight:700;
-	background-color:rgba(255,255,255,0.05);
-	line-height:1.8em;
-	padding:1px 0;
-	border-top:solid #444 1px;
-	border-bottom:solid #444 1px;
-	margin:30px 0 20px 0;
-	text-shadow: 0 1px 0px rgba(255,255,255,0.1);
-}     
-
-   	/*
-   		caption
-   	*/
-	div.control .title{
-		padding-left:5px;
-	}          
-	
-	/*
-		button
-	*/
-	div.control a{
-		font-weight:400;
-		padding: 0 7px;
-		text-decoration:none;
-	}
-     
-	div.control a.button{
-		color:#fff;
-		margin:0px 12px 0 5px;
-		background: -moz-linear-gradient(top, #414141 0%, #313131 100%); /* firefox */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#414141), color-stop(100%,#313131)); /* webkit */
-		border:solid #252525 1px;
-		cursor: pointer;
-	}
-		div.control a#edit-mode{
-			float:right;
-		}
-		
-	div.control a.button:hover{
-		background: -moz-linear-gradient(top, #454545 0%, #353535 100%); /* firefox */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#454545), color-stop(100%,#353535));
-	}
-	
-	div.control a.button.clicked{
-		background: -moz-linear-gradient(top, #636363 0%, #0e0e0e 100%); /* firefox */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#313131), color-stop(100%,#414141)); /* webkit */
-		border:solid #19811a 1px; 
-	}	
-	/*
-		input
-	*/
-	div.control input[type='text']{
-		color:#fff;
-		margin:0px 12px 0 5px;
-		background-color:rgba(0,0,0,0.26);
-		border:solid #666 1px;
-	}
-	
-	  
+ 
 		

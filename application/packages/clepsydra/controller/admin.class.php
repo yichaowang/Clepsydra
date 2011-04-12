@@ -118,7 +118,7 @@ class admin extends \foundry\controller {
 	}
 	
 	public function edit(){
-		$id = $this->request->get('id', 'num');
+		$id = $this->request->post('uid', 'num');
 		
 		if ($id) {
 			$person = M::init('clepsydra:person')->findByUID($id);

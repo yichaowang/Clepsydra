@@ -191,32 +191,44 @@ var updateClock = function(id){
 }
 
 
-//admin page
+/*
+	Admin 
+*/
 document.addEvent('domready', function(){
+	//Rose.ui.statusMessage.display( 'This is a message!', 'warning' );
 	if($('admin-others')==null){
 		return;
 	}
 	
-	$$('table#admin-others tr:even').addClass('alt');
+	$$('table#admin-others tr:even').addClass('alt'); 
 	
+	/*
+		edit mode button
+	*/
 	if($('edit-mode')!=null){
 		$('edit-mode').addEvent('click', function(){
 			if ($('edit-mode').hasClass('clicked')){
 				$('edit-mode').removeClass('clicked');
+				console.log('sad')
+				$$('#add-user + input').removeProperty('readonly');
 				$$('#admin-others tr[class!=title]').each(function(el){
 					if (!el.hasClass('in')){
 						el.tween('color','#444');
 					}
-					el.removeEvents();					
+					el.removeEvents();
+					$('crud-form').empty()					
 				});
-				
 			}else{
-				$('edit-mode').addClass('clicked')
+				$('edit-mode').addClass('clicked');
+				$$('#add-user + input').set('readonly','readonly');
 				$$('#admin-others tr[class!=title]').each(function(el){
+					new Fx.Scroll(document.body).toTop().chain(function(){
+						$('crud-form').empty();
+					});
 					el.tween('color','#ddd');
 					el.addEvents({
-				   		mouseover: function() {el.addClass('uselect')},
-					   	mouseout: function() {el.removeClass('uselect')},
+				   		mouseover: function() {el.addClass('shade')},
+					   	mouseout: function() {el.removeClass('shade')},
 						click: function(){
 						   	new Request.HTML({
                             	url: '/index.php/admin/userform',
@@ -224,8 +236,13 @@ document.addEvent('domready', function(){
 									$('crud-form').set('text', 'loading...');
 								},
 								onComplete: function(response){
-									$('crud-form').empty().adopt(response);
-									//new Fx.Scroll(document.body).toElement($('crud-controll'));			
+										$('crud-form').empty().adopt(response);
+									  	$$('#crud-form #reset').addEvent('click', function(){
+											new Fx.Scroll(document.body).toTop().chain(function(){
+												$('crud-form').empty()
+											});			
+										});
+										new Fx.Scroll(document.body).toElement($('crud-controll'));			
 								}
 						    }).get({'id':el.get('id')});
 						}
@@ -239,9 +256,12 @@ document.addEvent('domready', function(){
 		return;
 	};
 	
-	var fetchform = $$('#add-user + input').addEvent('keyup', function(e){		
+	/*
+		add user
+	*/
+	$$('#add-user + input').addEvent('keyup', function(e){		
 		if (this.value.length >= 3 && $('userform-create')==null){
-				//new Fx.Scroll(document.body).toElement($('crud-controll'));			
+				new Fx.Scroll(document.body).toElement($('crud-controll'));			
 				new Request.HTML({
 					url: '/index.php/admin/userform',
 					onRequest: function(){
@@ -249,20 +269,41 @@ document.addEvent('domready', function(){
 					},
 					onComplete: function(response){
 	                	$('crud-form').empty().adopt(response);
+						$$('#crud-form #reset').addEvent('click', function(){
+							new Fx.Scroll(document.body).toTop().chain(function(){
+								$('crud-form').empty()
+							});			
+						});  
+						$('edit-mode').removeClass('clicked');
+						$$('#admin-others tr[class!=title]').each(function(el){
+							if (!el.hasClass('in')){
+								el.tween('color','#444');
+							}
+							el.removeEvents();
+						}); 
 					}			
 				}).post({'uname': this.value});
 			   		
 		}
-		if ($('userform')!=null){
-			if ($('form-type').get('text')=="Add new person:"){
+		if (this.value.length >= 0 && $('userform-create')!=null){
+			
+			if ($('form-type').get('text')=="Add new user:"){				
 				$('uname').value = Slick.find(document, '#add-user + input').value
 			} 
-		}        
+		}
+		
+	   	if (this.value.length == 0){
+			new Fx.Scroll(document.body).toTop().chain(function(){
+				$('crud-form').empty();
+			});
+	   	}        
 	});
 	
 });
 
-
+/*
+	Timesheet
+*/
 document.addEvent('domready', function() {
 	timerids = []; 	
 	updateClock('clock');

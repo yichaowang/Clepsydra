@@ -12,7 +12,6 @@
 		<script type="text/javascript" src="{{ 'javascript/master.js'|url }}"></script>
 	</head>
 	<body>
-	
 		<div id="header">
 			{% include 'clepsydra/header.tpl' %}
 		</div>
@@ -63,7 +62,7 @@
 					&copy; Copyright 2011 The State News
 				</div>
 			</div>
-	    </div>  
+	    </div>
 	</body>
 </html>
 
