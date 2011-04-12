@@ -7,7 +7,7 @@
 <div id="frame">	
    	<div class="control grid_12 alpha omega">
 	  	<span class="title">SORT BY:</span>
-		<a id="edit-mode" class="button">Edit mode</a>   	
+		<a id="edit-mode" class="button">Edit User</a>   	
 	</div>
 	<div class="grid_12 alpha omega">
 		<div id="message">
