@@ -122,8 +122,10 @@ class admin extends \foundry\controller {
 		
 		if ($id) {
 			$person = M::init('clepsydra:person')->findByUID($id);
+			$message = "User profile saved.";
 		} else {
 			$person = M::init('clepsydra:person');
+			$message = "User profile created.";
 		};
 		
 		if( $person && $_POST && !empty($_POST) ) {
@@ -150,7 +152,7 @@ class admin extends \foundry\controller {
 			
 			$resp = new Redir(URL::linkTo(URL::build(
 					'clepsydra:admin', array(
-						'message' => $this->request->post('active', 'num'),
+						'message' => $message,
 						'type' => 'success'
 					))));	
 

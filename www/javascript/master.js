@@ -87,9 +87,10 @@ var checkOpenCard = function(){
 	var request = new Request.JSON({
 		url: '/index.php/3cabfab8f977ae7d12a3773423acf849/opencard.json?t=' + Math.random(),
 		onRequest: function(){
-			$('opencard').set('text','Loading...');
+			Rose.ui.statusMessage.display( 'Loading...', 'notice' );
 		},
 		onSuccess: function(jsonObj){
+			Rose.ui.statusMessage.hide();
 			displayInfo(jsonObj[0].opencard);
 		}
 	}).send();
@@ -195,8 +196,16 @@ var updateClock = function(id){
 	Admin 
 */
 document.addEvent('domready', function(){
-	Rose.ui.statusMessage.setOptions({'container':$(document.body)}); 
-	Rose.ui.statusMessage.display( 'This is a message!', 'warning' );
+	Rose.ui.statusMessage.setOptions({'container':$(document.body), 'id':"status-message"}); 
+	//Rose.ui.statusMessage.display( 'User setting saved.', 'error' );
+	
+	if( window.location.search.length && window.location.search.indexOf('message=') != -1 ) {			
+			var data = new URI(window.location.href).get('data'),
+				msgStr = data.message.replace(/[^a-zA-Z0-9\.\!\?\:\-\\\/\*]/g, ' '),
+				msgType = data.type;
+				Rose.ui.statusMessage.display( msgStr, msgType );	
+	} 
+	
 	
 	if($('admin-others')==null){
 		return;
@@ -224,7 +233,7 @@ document.addEvent('domready', function(){
 				$('edit-mode').addClass('clicked');
 				$$('#add-user + input').set('readonly','readonly');
 				$$('#add-user + input').addEvent('click', function(){
-					alert('Please exit Edit User mode first.')
+					Rose.ui.statusMessage.display( 'Please exit editing mode first.', 'error' );
 				});
 				$$('#admin-others tr[class!=title]').each(function(el){
 					new Fx.Scroll(document.body).toTop().chain(function(){
@@ -238,12 +247,14 @@ document.addEvent('domready', function(){
 						   	new Request.HTML({
                             	url: '/index.php/admin/userform',
 								onRequest: function(){
-									$('crud-form').set('text', 'loading...');
+									Rose.ui.statusMessage.display( 'Loading...', 'notice' );
 								},
 								onComplete: function(response){
+										Rose.ui.statusMessage.hide();
 										$('crud-form').empty().adopt(response);
 									  	$$('#crud-form #reset').addEvent('click', function(){
-											if (confirm('Are you sure you want to continue? All your unsaved information will be lost.')){
+											if (confirm('Are you sure you want to continue? All your unsaved information will be lost.')){                   
+												Rose.ui.statusMessage.display( 'User profile unsaved.', 'error' );
 												new Fx.Scroll(document.body).toTop().chain(function(){
 													$$('#add-user + input').set('value','');
 													$('crud-form').empty();
@@ -273,12 +284,14 @@ document.addEvent('domready', function(){
 				new Request.HTML({
 					url: '/index.php/admin/userform',
 					onRequest: function(){
-	                	$('crud-form').set('text', 'loading...');
+						Rose.ui.statusMessage.display( 'Loading...', 'notice' );
 					},
 					onComplete: function(response){
+						Rose.ui.statusMessage.hide();
 	                	$('crud-form').empty().adopt(response);
 						$$('#crud-form #reset').addEvent('click', function(){
 						   	if (confirm('Are you sure you want to continue? All your information will be lost.')){
+								Rose.ui.statusMessage.display( 'User profile unsaved.', 'error' ); 
 								new Fx.Scroll(document.body).toTop().chain(function(){
 									$$('#add-user + input').set('value','');
 									$('crud-form').empty();
@@ -317,9 +330,14 @@ document.addEvent('domready', function(){
 */
 document.addEvent('domready', function() {
 	timerids = []; 	
-	updateClock('clock');
-	//if ($('status')=="Clocked In"){updateTotalPanel()};
-	updateTotalPanel();						
+	if($('clock')){
+		updateClock('clock');
+	}
+	
+	if($('totalhr')!=null){
+		updateTotalPanel();
+	}
+							
 	if($('day-list')!=null){
 		checkOpenCard();
 	} 
