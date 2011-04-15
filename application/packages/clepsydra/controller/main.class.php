@@ -129,14 +129,14 @@ class main extends \foundry\controller {
 			return $resp;
 		}
 
-		$timeout = 900;
+		$timeout = 900; //15 min     
 		$attempts = 3;
 
 		if( $user->locked > 0 && (time() - $user->locked) < $timeout ) {
 			// locked and has not timed out
 			// again, we don't let on that this is not valid
 			$to = URL::build(URL::linkTo('clepsydra:main'), array(
-				'message' => 'Email or password was not correct',
+				'message' => 'Your account is temporarily locked due to invalid login. Please try again after '.floor(15 -(time() - $user->locked)/60).' minutes.',
 				'type' => 'error',
 				'refer' => $refer
 			));
