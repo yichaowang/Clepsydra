@@ -99,7 +99,10 @@ var checkOpenCard = function(){
 	var displayInfo = function(item){ 
 		if (typeof item == 'undefined'){
 			$('opencard').set('text', 'Clocked out');
-		}else{
+		} else if(typeof item.opencard == 'undefined') {
+			$('opencard').set('text', 'Clocked out');
+		} else {
+			console.log(item);
 			$('clockbtn').set('html', '<a href=\"#\" id=\"clock_out\" class=\"red\">Clock out</a>');
 			$('timer0tag').set('text', 'You worked: ');
 			displayTimeDiff('opencard', item.opencard.timein, ' - Current');
