@@ -22,12 +22,12 @@
 /*
 	Setting Base URL
 */
-var BaseURI = "/index.php/3cabfab8f977ae7d12a3773423acf849/";
+var BaseURI = "/index.php/";
 
 var clockIn = function(){
 	var fx = new Fx.Morph('opencard', {duration: 1000})
 	var request = new Request.JSON({
-		url: BaseURI + 'clockin.json?t=' + Math.random(),
+		url: BaseURI + '3cabfab8f977ae7d12a3773423acf849/clockin.json?t=' + Math.random(),
 		onRequest: function(){
 			fx.set('html','<a>Loading...</a>');
 		},
@@ -63,7 +63,7 @@ var clockOut = function(){
 	var fxc = new Fx.Morph('clockbtn', {duration: 2000})
 	var fxo = new Fx.Morph('opencard', {duration: 2000})
 	var request = new Request.JSON({
-		url: BaseURI + 'clockout.json?t=' + Math.random(),
+		url: BaseURI + '3cabfab8f977ae7d12a3773423acf849/clockout.json?t=' + Math.random(),
 		onRequest: function(){
 			if($('day-list')!=null){
 		   		$('opencard').set('text', 'Loading...')
@@ -89,7 +89,7 @@ var clockOut = function(){
 
 var checkOpenCard = function(){
 	var request = new Request.JSON({
-		url: BaseURI + 'opencard.json?t=' + Math.random(),
+		url: BaseURI + '3cabfab8f977ae7d12a3773423acf849/opencard.json?t=' + Math.random(),
 		onRequest: function(){
 			Rose.ui.statusMessage.display( 'Loading...', 'notice' );
 		},
@@ -255,7 +255,7 @@ document.addEvent('domready', function(){
 					   	mouseout: function() {el.removeClass('shade')},
 						click: function(){
 						   	new Request.HTML({
-                            	url: '/index.php/admin/userform',
+                            	url: BaseURI + 'admin/userform',
 								onRequest: function(){
 									Rose.ui.statusMessage.display( 'Loading...', 'notice' );
 								},
@@ -292,7 +292,7 @@ document.addEvent('domready', function(){
 		if (this.value.length >= 3 && $('userform-create')==null){
 				new Fx.Scroll(document.body).toElement($('crud-controll'));			
 				new Request.HTML({
-					url: '/index.php/admin/userform',
+					url: BaseURI + 'admin/userform',
 					onRequest: function(){
 						Rose.ui.statusMessage.display( 'Loading...', 'notice' );
 					},
