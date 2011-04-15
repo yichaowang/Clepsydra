@@ -6205,24 +6205,15 @@ if( !window['Rose'] ) {
 
 	var StatusMessage = new Class({
 		
-		_container: false,
-		_message: false,
-		_type: false,
+		Implements: Options,
 		
-		_defaultOptions: $H({
-			container: $(document.body),
-			id: 'rose_statusMessage'
-		}),
+		options: {
+		    //container: document.body,
+	        id: 'rose_statusMessage'
+	    },
 		
-		_options: $H({}),
-		
-		initialize: function() {
-			this.setOptions({});
-		},
-		
-		setOptions: function(opts) {
-			this._options = $H(opts);
-			this._options.combine( this._defaultOptions );
+		initialize: function(options) {
+			this.setOptions(options);
 		},
 		
 		display: function( message ) {
@@ -6253,25 +6244,31 @@ if( !window['Rose'] ) {
 			var winCoords = $(window).getCoordinates();
 
 			this._container = new Element( 'div', {
-				'id': this._options.get('id'),
+				'id': this.options.id,
+				styles: {
+					position: 'fixed',
+					top: 0
+					left: (winCoords.width)/2 - ()
+				},
 				'tween': {
 					'duration': 250
 				}
 			});
 
+			/*
 			var ticker = $('ticker');
-			if( ticker ) {
-				// if no ticker element, just stick it up at the top of the page
-				// in the center
-				var coords = ticker.getCoordinates();
-				this._container.setStyles({
-					'left': coords.left,
-					'width': coords.width,
-					'height': coords.height
-				});
-			}
-
-			$(this._options.get('container')).adopt( this._container );
+						if( ticker ) {
+							// if no ticker element, just stick it up at the top of the page
+							// in the center
+							var coords = ticker.getCoordinates();
+							this._container.setStyles({
+								'left': coords.left,
+								'width': coords.width,
+								'height': coords.height
+							});
+						}  */
+			
+			$(this.options.container).adopt( this._container );
 		},
 		
 		_show: function() {

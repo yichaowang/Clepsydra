@@ -10,7 +10,7 @@
 		<a id="edit-mode" class="button">Edit User</a>   	
 	</div>
 	<div class="grid_12 alpha omega">
-		<div id="message">
+		<div id="ticker">
 			  message: {{message}}
 		</div>
 		<table id="admin-others" cellspacing="0" summary="Colleagues at State News.">
