@@ -195,7 +195,9 @@ var updateClock = function(id){
 	Admin 
 */
 document.addEvent('domready', function(){
-	//Rose.ui.statusMessage.display( 'This is a message!', 'warning' );
+	Rose.ui.statusMessage.setOptions({'container':$(document.body)}); 
+	Rose.ui.statusMessage.display( 'This is a message!', 'warning' );
+	
 	if($('admin-others')==null){
 		return;
 	}
@@ -209,8 +211,8 @@ document.addEvent('domready', function(){
 		$('edit-mode').addEvent('click', function(){
 			if ($('edit-mode').hasClass('clicked')){
 				$('edit-mode').removeClass('clicked');
-				console.log('sad')
 				$$('#add-user + input').removeProperty('readonly');
+				$$('#add-user + input').removeEvents('click');
 				$$('#admin-others tr[class!=title]').each(function(el){
 					if (!el.hasClass('in')){
 						el.tween('color','#444');
@@ -221,6 +223,9 @@ document.addEvent('domready', function(){
 			}else{
 				$('edit-mode').addClass('clicked');
 				$$('#add-user + input').set('readonly','readonly');
+				$$('#add-user + input').addEvent('click', function(){
+					alert('Please exit Edit User mode first.')
+				});
 				$$('#admin-others tr[class!=title]').each(function(el){
 					new Fx.Scroll(document.body).toTop().chain(function(){
 						$('crud-form').empty();
@@ -238,9 +243,12 @@ document.addEvent('domready', function(){
 								onComplete: function(response){
 										$('crud-form').empty().adopt(response);
 									  	$$('#crud-form #reset').addEvent('click', function(){
-											new Fx.Scroll(document.body).toTop().chain(function(){
-												$('crud-form').empty()
-											});			
+											if (confirm('Are you sure you want to continue? All your unsaved information will be lost.')){
+												new Fx.Scroll(document.body).toTop().chain(function(){
+													$$('#add-user + input').set('value','');
+													$('crud-form').empty();
+												});
+											} 									
 										});
 										new Fx.Scroll(document.body).toElement($('crud-controll'));			
 								}
@@ -270,9 +278,12 @@ document.addEvent('domready', function(){
 					onComplete: function(response){
 	                	$('crud-form').empty().adopt(response);
 						$$('#crud-form #reset').addEvent('click', function(){
-							new Fx.Scroll(document.body).toTop().chain(function(){
-								$('crud-form').empty()
-							});			
+						   	if (confirm('Are you sure you want to continue? All your information will be lost.')){
+								new Fx.Scroll(document.body).toTop().chain(function(){
+									$$('#add-user + input').set('value','');
+									$('crud-form').empty();
+								});
+							}			
 						});  
 						$('edit-mode').removeClass('clicked');
 						$$('#admin-others tr[class!=title]').each(function(el){
@@ -366,14 +377,16 @@ document.addEvent('domready', function() {
 	});
 
 	// Handles the status message passed via GET-back
+	/*
 	if( window.location.search.length && window.location.search.indexOf('message=') != -1 ) {
-		
-		var data = new URI(window.location.href).get('data'),
-			msgStr = data.message.replace(/[^a-zA-Z0-9\.\!\?\:\-\\\/\*]/g, ' '),
-			msgType = data.type;
 			
-		// call message class method here...	
-	}
+			var data = new URI(window.location.href).get('data'),
+				msgStr = data.message.replace(/[^a-zA-Z0-9\.\!\?\:\-\\\/\*]/g, ' '),
+				msgType = data.type;
+				
+			// call message class method here...	
+		} */
+	
 
 	/*
 var data = new URI(window.location.href).get('data');
