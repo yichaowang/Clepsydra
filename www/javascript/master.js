@@ -97,7 +97,7 @@ var checkOpenCard = function(){
 	
 	var fxli = new Fx.Morph('opencardli', {duration: 1000})
 	var displayInfo = function(item){ 
-		if (typeof item.opencard == 'undefined'){
+		if (typeof item == 'undefined'){
 			$('opencard').set('text', 'Clocked out');
 		}else{
 			$('clockbtn').set('html', '<a href=\"#\" id=\"clock_out\" class=\"red\">Clock out</a>');
