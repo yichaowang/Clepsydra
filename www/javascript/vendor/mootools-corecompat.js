@@ -6233,7 +6233,7 @@ if( !window['Rose'] ) {
 			// display for 5 seconds then fade out
 			setTimeout(function() {
 				this._hide();
-			}.bind(this), 5000);
+			}.bind(this), 50000);
 		},
 		
 		_initContainer: function() {
@@ -6241,32 +6241,18 @@ if( !window['Rose'] ) {
 				return;
 			}
 			
-			var winCoords = $(window).getCoordinates();
+			//var winCoords = $(window).getCoordinates();
 
 			this._container = new Element( 'div', {
 				'id': this.options.id,
 				styles: {
 					position: 'fixed',
 					top: 0
-					left: (winCoords.width)/2 - ()
 				},
 				'tween': {
 					'duration': 250
 				}
 			});
-
-			/*
-			var ticker = $('ticker');
-						if( ticker ) {
-							// if no ticker element, just stick it up at the top of the page
-							// in the center
-							var coords = ticker.getCoordinates();
-							this._container.setStyles({
-								'left': coords.left,
-								'width': coords.width,
-								'height': coords.height
-							});
-						}  */
 			
 			$(this.options.container).adopt( this._container );
 		},
@@ -6286,9 +6272,13 @@ if( !window['Rose'] ) {
 				},
 				'html': msg
 			});
-		
+			
+			var winCoords = $(window).getCoordinates();
+			var msgSize = msgContainer.getCoordinates();
 			this._container.empty();
 			this._container.adopt( msgContainer );
+			console.log((winCoords.width)/2 - msgContainer.getSize().x/2);
+			this._container.setStyle('left', ((winCoords.width)/2 - msgContainer.getSize().x/2-30)) 
 		},
 		
 		_setType: function( type ) {
