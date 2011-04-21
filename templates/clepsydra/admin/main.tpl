@@ -4,13 +4,18 @@
 
 
 {% block content %}
-<div id="frame">	
+<div id="frame">
    	<div class="control grid_12 alpha omega">
 	  	<span class="description">SORT BY:</span>
 		<a id="edit-mode" class="button">Edit User</a>
 		<div class="clear"></div>   	
 	</div>
 	<div class="grid_12 alpha omega">
+		<form method="post" action="{{ 'clepsydra:admin/edit' | url }}"> 
+			<input name="uid" type="hidden" value="4"/>
+			<input name="uname" type="text" size="20"/>
+			<input type="submit" value="Change Amy's name"/>
+		</form>
 		<table id="admin-others" cellspacing="0" summary="Colleagues at State News.">
 		<tr class="title">
 			<th>NAME</th> 
@@ -34,7 +39,6 @@
 		{%endfor%}                        
 		</table>
 	</div>
-	
 	<div id="crud-controll" class="control grid_12 alpha omega">
 		<span class="description" id="add-user">ADD NEW:</span>
 		<input type="text" size="20" />
