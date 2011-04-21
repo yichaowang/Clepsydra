@@ -269,9 +269,25 @@ document.addEvent('domready', function(){
 										var jsonRequest = new Request.JSON({
 											url: BaseURI + 'admin/userform.json', 
 											onSuccess: function(response){
+												console.log('mootools json request =');
 												console.log(response);
 											}	
-										}).get({'id':el.get('id')});
+										}).get({'id':el.get('id')}); 
+									   
+									 
+									  	var xmlhttp=new XMLHttpRequest();
+										xmlhttp.open("GET","/~yichao/Clepsydra/www/index.php/admin/userform.json?id=4",true);
+										xmlhttp.send(); 
+										//var xmlresponse6 = eval(xmlhttp.responseText);
+										//var xmlresponse5 = JSON.decode(xmlhttp.responseText);
+										
+										xmlhttp.onreadystatechange=function(){
+										  console.log(xmlhttp.readyState);
+										}                    
+										
+										xmlresponse = xmlhttp.responseText;
+										//console.log('XMLHttp request =');
+										console.log(xmlhttp.responseText);
 										
 										//var responsejson = JSON.encode(response);
 										//console.log(responsejson); 
