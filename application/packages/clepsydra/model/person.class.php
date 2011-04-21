@@ -166,7 +166,26 @@ class person extends \foundry\model {
 		}
 		$t = number_format($t,$digits,'.','');
 		return $t." ".$unit;       
-	}  
+	}
+	
+	//$t array for a period, single for a day
+	Public function cardsByPeriod($t){
+		if (is_array($t)){
+			if (count($t)==2){
+				var_dump($t);
+				
+				
+				exit;
+			}else{
+				echo "not 2 element.";
+				exit;
+			}
+		}else{
+			echo "not array.";
+			exit;
+		}
+		
+	} 
 	
 	Public function timeByDay(){
 		$j=0;
@@ -175,7 +194,7 @@ class person extends \foundry\model {
 			$j++;
 			$tpart[$j] = getdate($card->timein);
 			
-			//considering the opencard
+			//add the time for opencard
 			if (!isset($opencardTimeElapsed)){
 				$opencardTimeElapsed = ($card->timein==$card->timeout ?  (time()-$card->timein) : 0);
 				$t[$j]['time'] 	 = $opencardTimeElapsed;
@@ -184,13 +203,13 @@ class person extends \foundry\model {
 			if ($tpart[$j]['mday'] == $tpart[$j-1]['mday']) {
 				$j--;
 				$t[$j]['time'] 	 += $diff;
-				$t[$j]['cards'][] = $card;
+				$t[$j]['cards'][]= array($card['uid'], $card['timein'], $card['timeout'], $card['person_id'] );
 			}else{
 				$t[$j]['time']    += $diff;
 				$t[$j]['weekday'] = substr($tpart[$j]['weekday'],0,3);
 				$t[$j]['mday']    = $tpart[$j]['mday'];
 				$t[$j]['month']   = $tpart[$j]['mon'];
-				$t[$j]['cards'][] = $card;     
+				$t[$j]['cards'][]= array($card['uid'], $card['timein'], $card['timeout'], $card['person_id'] );
 			}
 		  
 		}
@@ -212,7 +231,7 @@ class person extends \foundry\model {
 			$m = $m." ".$unit; 
 			$t[$h]['time']=$m;
 		}
-
+        
 		return $t;
 	}
 }	

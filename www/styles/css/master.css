@@ -275,8 +275,6 @@ ul.dark_list li em {
 	font-size: 12px;             
 }
 
-/* Day List */
-
 
 /* Timer */
 
@@ -456,8 +454,29 @@ table th{
 		table#admin-others tr.in{
 			color:#ccc;	
 		}
+
+    table#admin-time{
+		width:520px;
+		font-size:1.1em;
+		margin-left: auto;
+		margin-right: auto;
+		color:#ccc;
+		text-shadow: 0 1px 0px rgba(0,0,0,1);
+	}
+		table#admin-time tr.in{
+			color:#ccc;	
+		}   
 /*
-	user form
+	Admin-time
+*/
+div#admin-time-nav{
+	font-size:1.1em;
+	font-weight:400;
+	margin:5px 5px 5px 10px;
+}	
+
+/*
+	User form
 */
 form{
 }	
@@ -504,6 +523,7 @@ form{
 			
 	form div.title { 
 		font-size:1.1em;
+		padding-top:15px;
 		margin-bottom:10px;   
 		
 	}     
@@ -562,13 +582,18 @@ div.control {
 	border-bottom:solid #444 1px;
 	margin:30px 0 20px 0;
 	text-shadow: 0 1px 0px rgba(255,255,255,0.1);
+}
+
+div.control.sub{
+	margin:0px;
 }     
 
    	/*
    		caption
    	*/
-	div.control .title{
-		padding-left:5px;
+	div.control .description{
+		padding:1px 3px 0px 3px;
+		float:left;
 	}          
 
 	/*
@@ -578,16 +603,18 @@ div.control {
 		font-weight:400;
 		padding: 0 7px;
 		text-decoration:none;
+		float:left;
 	}
 
 	div.control a.button{
 		color:#fff;
-		margin:0px 12px 0 5px;
+		margin:0px 7px 0 7px;
 		background: -moz-linear-gradient(top, #414141 0%, #313131 100%); 
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#414141), color-stop(100%,#313131));
 		border:solid #252525 1px;
 		cursor: pointer;
 	}
+	
 		div.control a#edit-mode{
 			float:right;
 		}
@@ -611,6 +638,8 @@ div.control {
 		input
 	*/
 	div.control input[type='text']{
+		float:left;
+		padding-top:2px;
 		background: rgba(0,0,0,0.2);
 		border: 1px solid rgba(0,0,0,0.2);
 		color: #fff;
@@ -675,7 +704,7 @@ h2, table caption {
 	border-right: 1px solid #333;
 	border-bottom: 1px solid #333;
 	background: url(../img/icons/accept.png) 5px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#82a96a), to(#4e6a52), color-stop(1%, #fff), color-stop(2%, #82a96a));
-    background: url(../img/icons/accept.png) 5px 50% no-repeat, -moz-linear-gradient(-90deg, #e0f7d2, #fff 2%, #e0f7d2 3%, #b3d69e);
+    background: url(../img/icons/accept.png) 5px 50% no-repeat, -moz-linear-gradient(-90deg, #82a96a, #fff 1%, #82a96a 2%, #4e6a52);
     padding: 1px 7px 4px 25px;
     position: absolute;
     top: 10px;
@@ -688,13 +717,13 @@ h2, table caption {
 
 #status-message.notice{
 	background: -webkit-gradient(linear, left top, left bottom, from(#82a96a), to(#4e6a52), color-stop(1%, #fff), color-stop(2%, #82a96a));
-    background: -moz-linear-gradient(-90deg, #e0f7d2, #fff 2%, #e0f7d2 3%, #b3d69e);
+    background: -moz-linear-gradient(-90deg, #82a96a, #fff 1%, #82a96a 2%, #4e6a52);
     padding: 1px 7px 4px 7px;
 }
 
 #status-message.error{
 	background: url(../img/icons/error.png) 5px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#aa3030), to(#642121), color-stop(1%, #fff), color-stop(2%, #aa3030), color-stop(37%, #aa3030));
-    background: url(../img/icons/error.png) 5px 50% no-repeat, -moz-linear-gradient(-90deg, #e0f7d2, #fff 2%, #e0f7d2 3%, #b3d69e);
+    background: url(../img/icons/error.png) 5px 50% no-repeat, -moz-linear-gradient(-90deg, #aa3030, #fff 1%, #aa3030 2%, #aa3030 37%, #642121);
     padding: 1px 7px 4px 25px;
 } 
 
