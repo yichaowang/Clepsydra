@@ -25,6 +25,7 @@
 var BaseURI = "/index.php/";
 
 var clockIn = function(){
+	
 	var fx = new Fx.Morph('opencard', {duration: 1000})
 	var request = new Request.JSON({
 		url: BaseURI + '3cabfab8f977ae7d12a3773423acf849/clockin.json?t=' + Math.random(),
@@ -32,7 +33,7 @@ var clockIn = function(){
 			fx.set('html','<a>Loading...</a>');
 		},
 		onSuccess: function(jsonObj){
-			$('clockbtn').set('html', '<a href=\"#\" id=\"clock_out\" onclick="clockOut()" class=\"red\">Clock out</a>');
+			$('clockbtn').set('html', '<a href=\"#\" id=\"clock_out\" onclick="clockOut()" class=\"red\ readonly">Clock out</a>');
 			$('status').set('text', 'Clocked In');
 			var clock = $('t-today').get('html');
 			var tri = clock.split(':');
@@ -259,8 +260,16 @@ document.addEvent('domready', function(){
 								onRequest: function(){
 									Rose.ui.statusMessage.display( 'Loading...', 'notice' );
 								},
-								onComplete: function(response){
+								onComplete: function(response, responseElements, responseHTML, responseJavaScript){
 										Rose.ui.statusMessage.hide();
+										
+										console.log(response);
+										console.log(responseHTML);
+										
+										
+										//var responsejson = JSON.encode(response);
+										//console.log(responsejson); 
+										
 										$('crud-form').empty().adopt(response);
 									  	$$('#crud-form #reset').addEvent('click', function(){
 											if (confirm('Are you sure you want to continue? All your unsaved information will be lost.')){                   
@@ -333,10 +342,37 @@ document.addEvent('domready', function(){
 	   	}        
 	});
 	
+	/*
+		Admin User Timesheet Editing
+	*/
+	var loadTime = function(card){
+	   	Object.each(card, function(val){
+	   		console.log(val);
+	   	});
+	}                     
+	
+	var loadUserTime = function(uid, start, end){
+		//console.log(uid);
+		new Request.JSON({
+			url: BaseURI + 'admin/usertime.json',
+			onRequest: function(){
+				
+			},
+			onComplete: function(jsonObj){
+				//console.log(jsonObj[0].usertime);
+				loadTime(jsonObj[0].usertime);				
+			}
+		}).get({'id': uid})
+		
+	}
+	 
+	$$('table#admin-time tr:even').addClass('alt'); 
+	loadUserTime(3);
+	
 });
 
 /*
-	Timesheet
+	User Timesheet
 */
 document.addEvent('domready', function() {
 	if($('clock')){

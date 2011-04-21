@@ -168,7 +168,7 @@ class person extends \foundry\controller {
 				
 		foreach( $cards as $card ){
 			$i++;
-			if ($card->timein==$card->timeout){
+			if ($card->timein==$card->timeout && $user->status == 1){
 				if ($i == 1){
 					$opencard['opencard'] = $card;
 				}else{

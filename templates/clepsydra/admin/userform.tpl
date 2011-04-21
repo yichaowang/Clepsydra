@@ -2,32 +2,32 @@
 {% if person %} {% set role = 'edit' %} {% endif %}
 
 {% if role=='create' %}
-<form class="grid_6 userform" action="{{ 'clepsydra:admin/edit' | url }}" id="userform-create" method="post">
+<form class="userform" action="{{ 'clepsydra:admin/edit' | url }}" id="userform-create" method="post">
 	<fieldset>
 		<div id="form-type" role="add" class="title">Add new user:</div>
 		<ul>
 			<li> 
 				<label>Name</label>
-				<input id="uname" name="uname" type="text" size="30" value="{{uname}}" readonly="readonly" />
+				<input id="uname" name="uname" type="text" size="20" value="{{uname}}" readonly="readonly" />
 			</li>
 			<li> 
 				<label for="email">Email</label>
-				<input type="text" name="email" size="30" value="{{person.email}}"/>
+				<input type="text" name="email" size="20" value="{{person.email}}"/>
 			</li>
 
 			<li> 
 				<label for="password">Password</label>
-				<input type="password" name="password" size="30" />
+				<input type="password" name="password" size="20" />
 			</li>
 		
 			<li> 
 				<label for="passwordc">Confirm Password</label>
-				<input type="password" name="passwordc" size="30" />
+				<input type="password" name="passwordc" size="20" />
 			</li>
 		
 			<li> 
 				<label for="department">Department</label>
-				<input type="text" name="department" size="30" />
+				<input type="text" name="department" size="20" />
 			</li>
 		
 			<li> 
@@ -37,7 +37,7 @@
 		
 			<li> 
 				<label for="phone">Phone</label>
-				<input type="text" name="phone" size="30" />
+				<input type="text" name="phone" size="20" />
 			</li>
 		
 			<li> 
@@ -87,33 +87,33 @@
 {% endif %}
 
 {% if role=='edit' %}
-<form class="grid_6 userform" action="{{ 'clepsydra:admin/edit' | url }}" id="userform-update" method="post">
+<form class="userform" action="{{ 'clepsydra:admin/edit' | url }}" id="userform-update" method="post">
 	<fieldset>
 		<div class="title">Editing {{person.name}}'s profile:</div>
    	 	<ul>
 			<input type="hidden" name="uid" value={{person.uid}}>
 			<li> 
 				<label>Name</label>
-				<input id="uname" name="uname" type="text" size="30" value="{{person.name}}" />
+				<input id="uname" name="uname" type="text" size="20" value="{{person.name}}" />
 			</li>
 			<li> 
 				<label for="email">Email</label>
-				<input type="text" name="email" size="30" value="{{person.email}}"/>
+				<input type="text" name="email" size="20" value="{{person.email}}"/>
 			</li>
 
 			<li> 
 				<label for="password">Password</label>
-				<input type="password" name="password" size="30"/>
+				<input type="password" name="password" size="20"/>
 			</li>
 		
 			<li> 
 				<label for="passwordc">Confirm Password</label>
-				<input type="password" name="passwordc" size="30"/>
+				<input type="password" name="passwordc" size="20"/>
 			</li>
 		
 			<li> 
 				<label for="department">Department</label>
-				<input type="text" name="department" size="30" value="{{person.department}}"/>
+				<input type="text" name="department" size="20" value="{{person.department}}"/>
 			</li>
 		
 			<li> 
@@ -123,7 +123,7 @@
 		
 			<li> 
 				<label for="phone">Phone</label>
-				<input type="text" name="phone" size="30" value="{{person.phone}}"/>
+				<input type="text" name="phone" size="20" value="{{person.phone}}"/>
 			</li>
 		
 			<li> 

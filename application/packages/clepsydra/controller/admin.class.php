@@ -158,6 +158,25 @@ class admin extends \foundry\controller {
 
 			return $resp;
 		 };   
+	}
+	
+	public function usertime(){
+		$id = $this->request->get('id', 'num');
+		$user = M::init('clepsydra:person')->findByUID($id)->timeByDay();	
+		
+		return array(
+			'usertime' => $user
+		);
+		
+	}
+	
+	public function timecardarray(){
+		//$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
+		$user = M::init('clepsydra:person')->findByUID(3);
+		//$t = array("element 1 text", "element 2 text", "3");
+		//$t = 1;
+		print_r($user->timeByDay());
+		exit();
 	}       
 	
 } 
