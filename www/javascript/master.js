@@ -263,9 +263,15 @@ document.addEvent('domready', function(){
 								onComplete: function(response, responseElements, responseHTML, responseJavaScript){
 										Rose.ui.statusMessage.hide();
 										
-										console.log(response);
-										console.log(responseHTML);
+										//console.log(response);
+										//console.log(responseHTML);
 										
+										var jsonRequest = new Request.JSON({
+											url: BaseURI + 'admin/userform.json', 
+											onSuccess: function(response){
+												console.log(response);
+											}	
+										}).get({'id':el.get('id')});
 										
 										//var responsejson = JSON.encode(response);
 										//console.log(responsejson); 
@@ -367,7 +373,7 @@ document.addEvent('domready', function(){
 	}
 	 
 	$$('table#admin-time tr:even').addClass('alt'); 
-	loadUserTime(3);
+	//loadUserTime(3);
 	
 });
 
