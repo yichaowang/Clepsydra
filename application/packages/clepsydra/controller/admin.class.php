@@ -117,6 +117,16 @@ class admin extends \foundry\controller {
 	   
 	}
 	
+	public function userinfo(){
+		$id = $this->request->get('id', 'num');
+		$uname = $this->request->post('uname', 'specialChars');
+		$person = M::init('clepsydra:person')->findByUID($id);
+		return array(
+			'person'=> $person
+		);
+	}
+	
+	
 	public function edit(){
 		$id = $this->request->post('uid', 'num');
 		

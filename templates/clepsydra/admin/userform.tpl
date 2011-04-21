@@ -12,7 +12,7 @@
 			</li>
 			<li> 
 				<label for="email">Email</label>
-				<input type="text" name="email" size="20" value="{{person.email}}"/>
+				<input type="text" name="email" size="20" value=""/>
 			</li>
 
 			<li> 
