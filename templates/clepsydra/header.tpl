@@ -10,7 +10,7 @@
 						</li>
 						{% if user.is_admin == 1 %}
 						<li {% if active == 'admin' %} class="active" {% endif %}>
-							<a href="{{ 'clepsydra:admin' | url }}">Adminastration</a>
+							<a href="{{ 'clepsydra:admin' | url }}">Administration</a>
 						</li>
 						{% endif %}
 					</ul>

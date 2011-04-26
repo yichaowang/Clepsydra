@@ -172,8 +172,8 @@ class admin extends \foundry\controller {
 	
 	public function usertime(){
 		$id = $this->request->get('id', 'num');
-		$user = M::init('clepsydra:person')->findByUID($id)->timeByDay();	
-		
+		$wk = $this->request->get('wk', 'specialChars');
+		$user = M::init('clepsydra:person')->findByUID($id)->timeByWk($wk);	   	
 		return array(
 			'usertime' => $user
 		);

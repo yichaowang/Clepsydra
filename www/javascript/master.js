@@ -260,11 +260,8 @@ document.addEvent('domready', function(){
 								onRequest: function(){
 									Rose.ui.statusMessage.display( 'Loading...', 'notice' );
 								},
-								onComplete: function(response, responseElements, responseHTML, responseJavaScript){
-										Rose.ui.statusMessage.hide();
-										
-										//console.log(response);
-										//console.log(responseHTML);
+								onComplete: function(response){
+										Rose.ui.statusMessage.hide();          
 										
 										var jsonRequest = new Request.JSON({
 											url: BaseURI + 'admin/userform.json', 
@@ -273,25 +270,6 @@ document.addEvent('domready', function(){
 												console.log(response);
 											}	
 										}).get({'id':el.get('id')}); 
-									   
-									 
-									  	var xmlhttp=new XMLHttpRequest();
-										xmlhttp.open("GET","/~yichao/Clepsydra/www/index.php/admin/userform.json?id=4",true);
-										xmlhttp.send(); 
-										//var xmlresponse6 = eval(xmlhttp.responseText);
-										//var xmlresponse5 = JSON.decode(xmlhttp.responseText);
-										
-										xmlhttp.onreadystatechange=function(){
-										  console.log(xmlhttp.readyState);
-										}                    
-										
-										xmlresponse = xmlhttp.responseText;
-										//console.log('XMLHttp request =');
-										console.log(xmlhttp.responseText);
-										
-										//var responsejson = JSON.encode(response);
-										//console.log(responsejson); 
-										
 										$('crud-form').empty().adopt(response);
 									  	$$('#crud-form #reset').addEvent('click', function(){
 											if (confirm('Are you sure you want to continue? All your unsaved information will be lost.')){                   
@@ -302,7 +280,10 @@ document.addEvent('domready', function(){
 												});
 											} 									
 										});
-										new Fx.Scroll(document.body).toElement($('crud-controll'));			
+										new Fx.Scroll(document.body).toElement($('crud-controll'));
+										
+										loadUserTime(el.get('id'));
+													
 								}
 						    }).get({'id':el.get('id')});
 						}
@@ -366,30 +347,35 @@ document.addEvent('domready', function(){
 	
 	/*
 		Admin User Timesheet Editing
-	*/
-	var loadTime = function(card){
-	   	Object.each(card, function(val){
-	   		console.log(val);
-	   	});
-	}                     
-	
+	*/	
 	var loadUserTime = function(uid, start, end){
 		//console.log(uid);
-		new Request.JSON({
-			url: BaseURI + 'admin/usertime.json',
+		new Request.HTML({
+			url: BaseURI + 'admin/usertime',
 			onRequest: function(){
 				
 			},
-			onComplete: function(jsonObj){
-				//console.log(jsonObj[0].usertime);
-				loadTime(jsonObj[0].usertime);				
+			onComplete: function(response){
+				$('user-time').empty().adopt(response);
+				$$('table#admin-time tr:even').addClass('alt');
+				$$('#user-time .control .button').addEvent('click',function(){
+					this.getSiblings('.button').removeClass('clicked');
+					this.toggleClass('clicked');
+				});
+				
+				$$('#user-time .control #go').removeEvents().addEvents({
+					'mousedown': function(){ this.addClass('clicked');},
+					'mouseup'  : function(){ 
+						this.removeClass('clicked'); 
+						this.getSiblings('.button').removeClass('clicked');
+					}
+				});
+			   		
 			}
-		}).get({'id': uid})
+		}).get({'id': uid, 'wk':'all'})
 		
-	}
+	} 
 	 
-	$$('table#admin-time tr:even').addClass('alt'); 
-	//loadUserTime(3);
 	
 });
 
