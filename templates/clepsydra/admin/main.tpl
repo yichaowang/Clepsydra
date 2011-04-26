@@ -41,7 +41,7 @@
 	<div id="crud-form" class="grid_5 omega">
 
 	</div>
-	<div id="user-time" class="grid_7 alpha">
+	<div id="crud-time" class="grid_7 alpha">
 		   
 	</div>   
 </div>	

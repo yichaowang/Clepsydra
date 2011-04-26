@@ -196,15 +196,15 @@ class person extends \foundry\model {
 			$start = (date('w', $ts) == 0) ? $ts : strtotime('last sunday', $ts);
 			$end = $start + 2 * 7 * 24 * 60 * 60;
 		} else {
-			//show one week of the latest time card if not wk specified 
+			//show one week of the latest time card if no wk specified 
 			$ts = $this->cards->limit(1)->timein;
 			$start =  (date('w', $ts) == 0) ? $ts : strtotime('last sunday', $ts);
 			$end = $start + 1 * 7 * 24 * 60 * 60; 
-			$t = $this->timeByDay($start,$end);
-			return $t;
 		}
                                         
-		$t = $this->timeByDay($start,$end);
+		$t['t'] = $this->timeByDay($start,$end);
+		$t['start'] = $start; 
+		$t['end']   = $end;
 		return $t;  
 	} 
 	
@@ -216,7 +216,6 @@ class person extends \foundry\model {
 		$j=0;
 		foreach( $this->cards as $card ){
 			if ($card->timein > $start && $card->timein < $end){
-				
 				$diff = ($card->timeout - $card->timein);
 				$j++;
 				$tpart[$j] = getdate($card->timein);
@@ -230,17 +229,17 @@ class person extends \foundry\model {
 				if ($tpart[$j]['mday'] == $tpart[$j-1]['mday']) {
 					$j--;
 					$t[$j]['time'] 	 += $diff;
-					$t[$j]['cards'][]= array($card['uid'], $card['timein'], $card['timeout'], $card['person_id'] );
+					$t[$j]['cards'][]= array($card['uid'], 'timein' => $card['timein'], 'timeout' => $card['timeout'], $card['person_id'] );
 				}else{
 					$t[$j]['time']    += $diff;
 					$t[$j]['weekday'] = substr($tpart[$j]['weekday'],0,3);
 					$t[$j]['mday']    = $tpart[$j]['mday'];
 					$t[$j]['month']   = $tpart[$j]['mon'];
-					$t[$j]['cards'][]= array($card['uid'], $card['timein'], $card['timeout'], $card['person_id'] );
+					$t[$j]['cards'][]= array($card['uid'], 'timein' => $card['timein'], 'timeout' => $card['timeout'], $card['person_id'] );
 				}
 			} 		  
 		}
-		
+	   
 		if ($t == null){
 			return false;
 		}
