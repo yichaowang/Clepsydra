@@ -185,35 +185,67 @@ class person extends \foundry\model {
 			exit;
 		}
 		
+	}
+	
+	Public function timeByWk($week=false){
+		$ts = time();
+		if ($week == 'pre'){
+			$end = (date('w', $ts) == 0) ? $ts : strtotime('next sunday', $ts);
+			$start = $end - 2 * 7 * 24 * 60 * 60;
+		} elseif ($week == 'next'){
+			$start = (date('w', $ts) == 0) ? $ts : strtotime('last sunday', $ts);
+			$end = $start + 2 * 7 * 24 * 60 * 60;
+		} else {
+			//show one week of the latest time card if not wk specified 
+			$ts = $this->cards->limit(1)->timein;
+			$start =  (date('w', $ts) == 0) ? $ts : strtotime('last sunday', $ts);
+			$end = $start + 1 * 7 * 24 * 60 * 60; 
+			$t = $this->timeByDay($start,$end);
+			return $t;
+		}
+                                        
+		$t = $this->timeByDay($start,$end);
+		return $t;  
 	} 
 	
-	Public function timeByDay(){
-		$j=0;
-		foreach( $this->cards as $card ){ 
-			$diff = ($card->timeout - $card->timein);
-			$j++;
-			$tpart[$j] = getdate($card->timein);
-			
-			//add the time for opencard
-			if (!isset($opencardTimeElapsed)){
-				$opencardTimeElapsed = ($card->timein==$card->timeout ?  (time()-$card->timein) : 0);
-				$t[$j]['time'] 	 = $opencardTimeElapsed;
-			}
-			
-			if ($tpart[$j]['mday'] == $tpart[$j-1]['mday']) {
-				$j--;
-				$t[$j]['time'] 	 += $diff;
-				$t[$j]['cards'][]= array($card['uid'], $card['timein'], $card['timeout'], $card['person_id'] );
-			}else{
-				$t[$j]['time']    += $diff;
-				$t[$j]['weekday'] = substr($tpart[$j]['weekday'],0,3);
-				$t[$j]['mday']    = $tpart[$j]['mday'];
-				$t[$j]['month']   = $tpart[$j]['mon'];
-				$t[$j]['cards'][]= array($card['uid'], $card['timein'], $card['timeout'], $card['person_id'] );
-			}
-		  
+	Public function timeByDay($start=0, $end='now'){ 
+		if ($end == 'now') {
+			$end = strtotime('+1 seconds');
 		}
 		
+		$j=0;
+		foreach( $this->cards as $card ){
+			if ($card->timein > $start && $card->timein < $end){
+				
+				$diff = ($card->timeout - $card->timein);
+				$j++;
+				$tpart[$j] = getdate($card->timein);
+			
+				//add the time for opencard
+				if (!isset($opencardTimeElapsed)){
+					$opencardTimeElapsed = ($card->timein==$card->timeout ?  (time()-$card->timein) : 0);
+					$t[$j]['time'] 	 = $opencardTimeElapsed;
+				}
+			
+				if ($tpart[$j]['mday'] == $tpart[$j-1]['mday']) {
+					$j--;
+					$t[$j]['time'] 	 += $diff;
+					$t[$j]['cards'][]= array($card['uid'], $card['timein'], $card['timeout'], $card['person_id'] );
+				}else{
+					$t[$j]['time']    += $diff;
+					$t[$j]['weekday'] = substr($tpart[$j]['weekday'],0,3);
+					$t[$j]['mday']    = $tpart[$j]['mday'];
+					$t[$j]['month']   = $tpart[$j]['mon'];
+					$t[$j]['cards'][]= array($card['uid'], $card['timein'], $card['timeout'], $card['person_id'] );
+				}
+			} 		  
+		}
+		
+		if ($t == null){
+			return false;
+		}
+		
+		//sanitizing and add unit 
 		$h=0;
 		foreach($t as $n){
 			$h++;

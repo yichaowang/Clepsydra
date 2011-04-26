@@ -20,6 +20,7 @@ class package {
 				'clepsydra:person' => 
 					'3cabfab8f977ae7d12a3773423acf849/:action',
 				'clepsydra:admin' => 'admin/:action',
+				'clepsydra:test' => 'test/:action',
 				'clepsydra:setting' => 'null',
 				'clepsydra:export' => 'null'
 			);
