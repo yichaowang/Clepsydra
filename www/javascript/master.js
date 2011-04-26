@@ -238,7 +238,8 @@ document.addEvent('domready', function(){
 						el.tween('color','#444');
 					}
 					el.removeEvents();
-					$('crud-form').empty()					
+					$('crud-form').empty();
+					$('crud-time').empty();					
 				});
 			}else{
 				$('edit-mode').addClass('clicked');
@@ -248,7 +249,8 @@ document.addEvent('domready', function(){
 				});
 				$$('#admin-others tr[class!=title]').each(function(el){
 					new Fx.Scroll(document.body).toTop().chain(function(){
-						$('crud-form').empty();
+						$('crud-form').empty(); 
+						$('crud-time').empty();
 					});
 					el.tween('color','#ddd');
 					el.addEvents({
@@ -262,14 +264,6 @@ document.addEvent('domready', function(){
 								},
 								onComplete: function(response){
 										Rose.ui.statusMessage.hide();          
-										
-										var jsonRequest = new Request.JSON({
-											url: BaseURI + 'admin/userform.json', 
-											onSuccess: function(response){
-												console.log('mootools json request =');
-												console.log(response);
-											}	
-										}).get({'id':el.get('id')}); 
 										$('crud-form').empty().adopt(response);
 									  	$$('#crud-form #reset').addEvent('click', function(){
 											if (confirm('Are you sure you want to continue? All your unsaved information will be lost.')){                   
@@ -277,13 +271,12 @@ document.addEvent('domready', function(){
 												new Fx.Scroll(document.body).toTop().chain(function(){
 													$$('#add-user + input').set('value','');
 													$('crud-form').empty();
+													$('crud-time').empty();					
 												});
 											} 									
 										});
 										new Fx.Scroll(document.body).toElement($('crud-controll'));
-										
-										loadUserTime(el.get('id'));
-													
+										loadUserTime(el.get('id'), 'all');
 								}
 						    }).get({'id':el.get('id')});
 						}
@@ -317,6 +310,7 @@ document.addEvent('domready', function(){
 								new Fx.Scroll(document.body).toTop().chain(function(){
 									$$('#add-user + input').set('value','');
 									$('crud-form').empty();
+									$('crud-time').empty();					
 								});
 							}			
 						});  
@@ -341,6 +335,7 @@ document.addEvent('domready', function(){
 	   	if (this.value.length == 0){
 			new Fx.Scroll(document.body).toTop().chain(function(){
 				$('crud-form').empty();
+			    $('crud-time').empty();
 			});
 	   	}        
 	});
@@ -348,7 +343,7 @@ document.addEvent('domready', function(){
 	/*
 		Admin User Timesheet Editing
 	*/	
-	var loadUserTime = function(uid, start, end){
+	var loadUserTime = function(uid, wk, start, end){
 		//console.log(uid);
 		new Request.HTML({
 			url: BaseURI + 'admin/usertime',
@@ -356,23 +351,31 @@ document.addEvent('domready', function(){
 				
 			},
 			onComplete: function(response){
-				$('user-time').empty().adopt(response);
+				$('crud-time').empty().adopt(response);
 				$$('table#admin-time tr:even').addClass('alt');
-				$$('#user-time .control .button').addEvent('click',function(){
+				$$('#crud-time .control .button').addEvent('click',function(){
 					this.getSiblings('.button').removeClass('clicked');
+					if (!this.hasClass('clicked')){
+						loadUserTime(uid, this.id);
+					}else{
+						loadUserTime(uid, 'all');
+					}
 					this.toggleClass('clicked');
 				});
 				
-				$$('#user-time .control #go').removeEvents().addEvents({
-					'mousedown': function(){ this.addClass('clicked');},
+				$$('#crud-time .control #go').removeEvents().addEvents({
+					'mousedown': function(){ 
+						this.addClass('clicked');
+					},
 					'mouseup'  : function(){ 
 						this.removeClass('clicked'); 
 						this.getSiblings('.button').removeClass('clicked');
+						loadUserTime(uid, 'slet', $('slet-s').getProperty('value'), $('slet-e').getProperty('value'));
 					}
 				});
 			   		
 			}
-		}).get({'id': uid, 'wk':'all'})
+		}).get({'id': uid, 'wk':wk, 'start':start, 'end':end})
 		
 	} 
 	 

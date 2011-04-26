@@ -628,6 +628,7 @@ div.control.sub{
 	div.control a.button.clicked{
 		background: -moz-linear-gradient(top, #313131 0%, #414141 100%); 
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#313131), color-stop(100%,#414141));
+		border:solid #046B26 1px; 
 	}
 
 	div.control a.button.clicked:hover{

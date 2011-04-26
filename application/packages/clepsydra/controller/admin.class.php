@@ -171,11 +171,42 @@ class admin extends \foundry\controller {
 	}
 	
 	public function usertime(){
-		$id = $this->request->get('id', 'num');
-		$wk = $this->request->get('wk', 'specialChars');
-		$user = M::init('clepsydra:person')->findByUID($id)->timeByWk($wk);	   	
+		$id 	= $this->request->get('id', 'num');
+		$wk 	= $this->request->get('wk', 'specialChars');
+		$sletS 	= $this->request->get('start', 'specialChars');
+		$sletE 	= $this->request->get('end', 'specialChars');
+	
+		if ($wk=='pre' || $wk=='next' || $wk=='all'){
+			$user = M::init('clepsydra:person')->findByUID($id)->timeByWk($wk);
+			$range['ss'] = $user['start'];
+			$range['es'] = $user['end'];
+		} else if($wk=='slet' && $sletS!="" && $sletE!=""){
+			$start  	= explode("/",$sletS);
+			$end  		= explode("/",$sletE);
+			$sstamp 	= mktime(0, 0, 0, $start[0], $start[1], date('Y'));
+			$estamp 	= mktime(0, 0, 0, $end[0], $end[1], date('Y'));
+			$user['t']	= M::init('clepsydra:person')->findByUID($id)->timeByDay($sstamp,$estamp);
+			$range['ss'] = $sstamp;
+			$range['es'] = $estamp;
+			$range['ts'] = $sletS; 
+			$range['te'] = $sletE;
+		}  
+		
+		$t = time();
+		$pay['nows'] = (date('w', $t) == 0) ? $t : strtotime('last sunday', $t);
+		$pay['nowe'] = $pay['nows'] + 7 * 24 * 60 * 60;
+ 	    $pay['pre']  = $pay['nows'] - 7 * 24 * 60 * 60;
+		$pay['nxt']  = $pay['nowe'] + 7 * 24 * 60 * 60;
+		
+		
+		$range['swday'] = date(l,$range['ss']);
+		$range['ewday'] = date(l,$range['es']);
+		
 		return array(
-			'usertime' => $user
+			'wk'   		=> $wk,
+			'usertime' 	=> $user['t'],
+			'range'		=> $range,
+			'pay'		=> $pay
 		);
 		
 	}
