@@ -139,13 +139,7 @@ class admin extends \foundry\controller {
 		};
 		
 		if( $person && $_POST && !empty($_POST) ) {
-			$person->password   = $this->request->post('password', 'specialChars');
-			$person->passwordc  = $this->request->post('passwordc', 'specialChars'); 
-			
-			//if ($person->password!=$person->passwordc){
-			//	return $resp;
-			//}             
-			
+			$person->password   = $this->request->post('password', 'specialChars');           
 			$person->name       = $this->request->post('uname', 'specialChars');
 			$person->email      = $this->request->post('email', 'email');
 			$person->department = $this->request->post('department', 'specialChars');
@@ -180,17 +174,23 @@ class admin extends \foundry\controller {
 			$user = M::init('clepsydra:person')->findByUID($id)->timeByWk($wk);
 			$range['ss'] = $user['start'];
 			$range['es'] = $user['end'];
-		} else if($wk=='slet' && $sletS!="" && $sletE!=""){
+		} else if(($wk=='slet' || $wk=='navpre' || $wk=='navnt') && $sletS!="" && $sletE!=""){
 			$start  	= explode("/",$sletS);
 			$end  		= explode("/",$sletE);
-			$sstamp 	= mktime(0, 0, 0, $start[0], $start[1], date('Y'));
+			$sstamp 	= mktime(0, 0, 0, $start[0], $start[1], (($start[0]<=$end[0]) ? date('Y') : date('Y')-1));
 			$estamp 	= mktime(0, 0, 0, $end[0], $end[1], date('Y'));
+			if($wk=='navpre'){
+            	$sstamp = strtotime('last sunday', $sstamp);
+				$estamp = $sstamp + 7 * 24 * 60 * 60; 
+			}
+			if($wk=='navnt'){
+            	$sstamp = (date('w', $estamp) == 0) ? $estamp : strtotime('last sunday', $estamp);
+				$estamp = $sstamp + 7 * 24 * 60 * 60; 
+			}
 			$user['t']	= M::init('clepsydra:person')->findByUID($id)->timeByDay($sstamp,$estamp);
 			$range['ss'] = $sstamp;
-			$range['es'] = $estamp;
-			$range['ts'] = $sletS; 
-			$range['te'] = $sletE;
-		}  
+			$range['es'] = $estamp; 		
+		} 
 		
 		$t = time();
 		$pay['nows'] = (date('w', $t) == 0) ? $t : strtotime('last sunday', $t);
@@ -209,16 +209,7 @@ class admin extends \foundry\controller {
 			'pay'		=> $pay
 		);
 		
-	}
-	
-	public function timecardarray(){
-		//$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
-		$user = M::init('clepsydra:person')->findByUID(3);
-		//$t = array("element 1 text", "element 2 text", "3");
-		//$t = 1;
-		print_r($user->timeByDay());
-		exit();
-	}       
+	}     
 	
 } 
 

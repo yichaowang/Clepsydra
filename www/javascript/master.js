@@ -342,6 +342,8 @@ document.addEvent('domready', function(){
 	
 	/*
 		Admin User Timesheet Editing
+		e.g. loadUserTime(2,'nt','4/13','4/16')
+			wk: 'pre','next','all','navpre','navnt'
 	*/	
 	var loadUserTime = function(uid, wk, start, end){
 		//console.log(uid);
@@ -373,6 +375,32 @@ document.addEvent('domready', function(){
 						loadUserTime(uid, 'slet', $('slet-s').getProperty('value'), $('slet-e').getProperty('value'));
 					}
 				});
+				
+				$$('#admin-time-nav #nav-pre').addEvent('click',function(){
+					var t = $('admin-time-nav').get('text').split('- ');
+					t[0] = t[0].substr(0,5);
+					t[1] = t[1].substr(0,5);
+					loadUserTime(uid, 'navpre', t[0], t[1]);
+			  	});
+			
+				$$('#admin-time-nav #nav-nt').addEvent('click',function(){
+					var t = $('admin-time-nav').get('text').split('- ');
+					t[0] = t[0].substr(0,5);
+					t[1] = t[1].substr(0,5);
+					loadUserTime(uid, 'navnt', t[0], t[1]);
+			  	});
+				
+		   		/*
+		   		if($$('#crud-time .control a#all').hasClass('clicked')=='true' ){
+		   							new Element('a', {id:'nav-pre', class:"btn-plain", styles:{'margin-right':'5px'}, html:'&laquo'}).inject($('admin-time-export'), 'before');
+		   							new Element('a', {id:'nav-next', class:"btn-plain", html:'&raquo'}).inject($('admin-time-export'), 'before');          
+		   							
+		   							$$('#admin-time-nav #nav-pre').addevent('click',function(){
+
+		   						  	});
+		   						};*/
+		   		
+			    
 			   		
 			}
 		}).get({'id': uid, 'wk':wk, 'start':start, 'end':end})

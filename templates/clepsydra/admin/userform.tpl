@@ -14,67 +14,51 @@
 				<label for="email">Email</label>
 				<input type="text" name="email" size="20" value=""/>
 			</li>
-
 			<li> 
 				<label for="password">Password</label>
 				<input type="password" name="password" size="20" />
 			</li>
-		
-			<li> 
-				<label for="passwordc">Confirm Password</label>
-				<input type="password" name="passwordc" size="20" />
-			</li>
-		
 			<li> 
 				<label for="department">Department</label>
 				<input type="text" name="department" size="20" />
 			</li>
-		
 			<li> 
 				<label for="pin">Pin (4 digits)</label>
 				<input type="text" name="pin" size="4" />
 			</li>
-		
 			<li> 
 				<label for="phone">Phone</label>
 				<input type="text" name="phone" size="20" />
 			</li>
-		
 			<li> 
 				<label for="admin">Admin</label>
 				<input type="checkbox" name="admin" value="1"/>
 				<label>is admin</label>
 			</li>
-		
 			<li> 
 				<label for="active">Active</label>
 				<input type="checkbox" name="active" value="1"/>
 				<label>is currently an active user</label>
 			</li>
-		
 			<li>
 				<label for="track">Time Tracked</label>
 				<input type="checkbox" name="track" value="1"/>
 				<label>time is tracked</label>
 			</li>	
-		
 			<li> 
 				<label for="status">Current Status</label>
 				<input type="checkbox" name="status" value="1"/>
 				<label>is currently clocked in</label>
 			</li>
-		
 			<li>
 				<label for="locked">Locked</label>
 				<input type="checkbox" name="locked" value="1">
 				<label>is locked due to invalid password</label>
 			</li>
-		
 			<li>
 				<label for="attempts">Attempts (3 maximum)</label>
 				<input type="text" name="attempts" size="1">
 			</li>
-           
 			<li>
 				<fieldset class="submit">
 					<input type="submit" id="submit" value="add" />
