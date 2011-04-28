@@ -470,9 +470,10 @@ table th{
 	Admin-time
 */
 div#admin-time-nav{
+	width:520px;
 	font-size:1.1em;
 	font-weight:400;
-	margin:5px 5px 5px 10px;
+	margin:8px auto;
 }	
 
 /*
@@ -572,7 +573,7 @@ form.userform fieldset.submit{
 /*
 	control
 */
-div.control {
+div.control{
 	color:rgba(0,0,0,0.6);
 	font-weight:700;
 	background-color:rgba(255,255,255,0.05);
@@ -601,7 +602,7 @@ div.control.sub{
 	*/
 	div.control a{
 		font-weight:400;
-		padding: 0 7px;
+		padding: 0 6px;
 		text-decoration:none;
 		float:left;
 	}
@@ -618,7 +619,7 @@ div.control.sub{
 		div.control a#edit-mode{
 			float:right;
 		}
-
+		
 	div.control a.button:hover{
 		background: -moz-linear-gradient(top, #454545 0%, #353535 100%);
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#454545), color-stop(100%,#353535));
@@ -635,7 +636,33 @@ div.control.sub{
 		background: -moz-linear-gradient(top, #353535 0%, #454545 100%);
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#353535), color-stop(100%,#454545));
 		border:solid #19811a 1px; 
-	}	
+	}
+	
+	a.btn-plain{
+		padding: 3px 10px;
+		color:#fff;
+		background: -moz-linear-gradient(top, #414141 0%, #313131 100%); 
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#414141), color-stop(100%,#313131));
+		border:solid #333 1px;
+		cursor:pointer;
+	}
+	
+	a.btn-plain:hover{
+		background: -moz-linear-gradient(top, #454545 0%, #353535 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#454545), color-stop(100%,#353535));
+		border:solid #19811a 1px;
+	}
+	
+	a.btn-plain:active{
+		background: -moz-linear-gradient(top, #353535 0%, #454545 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#353535), color-stop(100%,#454545));
+		border:solid #19811a 1px;    
+	}
+	
+		a#admin-time-export{
+			margin-top:-4px;
+			float:right;
+		}
 	/*
 		input
 	*/
@@ -655,7 +682,6 @@ div.control.sub{
 /* 
 	Misc Formatting 
 */
-
 em {
 	color: #515051;
 	margin-right: 5px;
