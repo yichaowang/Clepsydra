@@ -6,8 +6,8 @@
 {% block content %}
 <div id="frame">
    	<div class="control grid_12 alpha omega">
-	  	<span class="description">SORT BY:</span>
 		<a id="edit-mode" class="button">Edit User</a>
+		<a id="export" class="button">Export</a>
 		<div class="clear"></div>   	
 	</div>
 	<div class="grid_12 alpha omega">

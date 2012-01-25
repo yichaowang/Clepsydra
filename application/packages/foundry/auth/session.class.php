@@ -206,7 +206,8 @@ class session {
 			' where id = :cid and nonce = :nid and context = :xtc '.
 			'order by rowid desc limit 1';
 
-		$stmt = $this->dbh->prepare($q);
+		$stmt = $this->dbh->prepare($q);   
+		
 		// have to make sure this isn't cached
 		$stmt->execute(array(
 			':cid' => $cookie['id'],
@@ -215,6 +216,8 @@ class session {
 		), false, false);
 		
 		$row = $stmt->fetch();
+		
+		// print_r ($row);
 
 		if( !$row || empty($row) ) {
 			return false;

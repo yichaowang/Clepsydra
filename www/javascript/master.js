@@ -1,8 +1,8 @@
 /*------Yichao--------*/    
 
 /*
-	clockIn();     	   					Ajax record timecard->timein, then call checkOpenCard()
-	clockOut();         				Ajax record timecard->timeout, then call checkOpenCard()
+	clockIn();     	   					Call Person Class clockIn , then checkOpenCard()
+	clockOut();         				Call Person Class clockOut, then checkOpenCard()
 	checkOpenCard();    				Ajax check current state, and display info. Call updateTotalPanel() if is check in.
 		--> displayInfo(jsonObj) 		Display info in the jsonObj. 
 	updateTotalPanel();					Update timer at Total hr panel.
@@ -19,16 +19,97 @@
 										4: total time today timer  
 */    
 
+var CP = CP || {};
+
+CP = {
+    overlay:{},
+    options:{
+        BaseURI:"/index.php/"
+    }
+}; 
+   
+
+(CP.overlay = {
+    init: function(){
+        var o = CP.options;
+
+        this._self = new Element("div", {
+			id:"cpOverlay"
+		})
+		 
+		// request overlay's html content from tpl
+		new Request.HTML({
+			url: o.BaseURI + 'admin/export',
+			onRequest: function(){
+			},			
+			onComplete: function(response){				
+				CP.overlay._self.adopt(response);
+			}   
+		}).send();   
+		
+    },      
+    
+    load: function(){
+        var e = this._self;
+        e.setStyles({
+            display :'none',
+            width   :1,
+            height  :1
+        });           
+                  
+        $(document.body).adopt(e);
+    },
+    
+    open: function(){ 
+        var e = this._self;
+            
+        e.setStyles({
+            left    :(window.getWidth()/2-250),
+            width   : 500, 
+            height  :'auto',
+            display :'block'  
+        });  
+        
+        e.getElements('input[name=period]').addEvents({
+            click:function(){
+                var period = this.get('value'),
+                start, 
+                end;
+
+                start = period.split("|")[0];
+                end = period.split("|")[1];
+                
+                e.getElements('input[name=exdate-start]').set('value',start);
+                e.getElements('input[name=exdate-end]').set('value',end);
+            }
+        })
+
+        e.getElement('input.cancel').addEvents({
+            click: function(){
+                CP.overlay.close();
+            }
+        })
+    },
+    
+    close: function(){
+        var e = CP.overlay._self;
+        e.setStyles({
+            display: 'none'
+        });
+    }   
+    
+}).init();
+
 /*
-	Setting Base URL
+	Setting Base URI
 */
 var BaseURI = "/index.php/";
 
 var clockIn = function(){
-	
 	var fx = new Fx.Morph('opencard', {duration: 1000})
-	var request = new Request.JSON({
+	var request = new Request({
 		url: BaseURI + '3cabfab8f977ae7d12a3773423acf849/clockin.json?t=' + Math.random(),
+		method: 'get',
 		onRequest: function(){
 			fx.set('html','<a>Loading...</a>');
 		},
@@ -63,20 +144,22 @@ var clockIn = function(){
 var clockOut = function(){
 	var fxc = new Fx.Morph('clockbtn', {duration: 2000})
 	var fxo = new Fx.Morph('opencard', {duration: 2000})
-	var request = new Request.JSON({
-		url: BaseURI + '3cabfab8f977ae7d12a3773423acf849/clockout.json?t=' + Math.random(),
+	var request = new Request({
+		url: BaseURI + '3cabfab8f977ae7d12a3773423acf849/clockout.json?t=' + Math.random(), 
+		method: 'get',
 		onRequest: function(){
 			if($('day-list')!=null){
 		   		$('opencard').set('text', 'Loading...')
 			}
 		},
 		onSuccess: function(jsonObj){
+			var jsonDecoded = JSON.decode(jsonObj)
 			$('status').set('text', 'Clocked Out');
 			$('clockbtn').set('html', '<a href=\"#\" id=\"clock_in\" class=\"green\">Clock in</a>');
 			$('clock_in').addEvent('click', clockIn);
 			for (x in timerids){$clear(timerids[x])};
 			if($('day-list')!=null){
-				displayInfo(jsonObj[0].card);
+				displayInfo(jsonDecoded[0].card);
 			}	
 		}
 	}).send()
@@ -88,26 +171,28 @@ var clockOut = function(){
 	}
 }
 
-var checkOpenCard = function(){
-	var request = new Request.JSON({
+var checkOpenCard = function(){ 
+    console.log('ran');
+	var request = new Request({
 		url: BaseURI + '3cabfab8f977ae7d12a3773423acf849/opencard.json?t=' + Math.random(),
+		method: 'get',
 		onRequest: function(){
-			Rose.ui.statusMessage.display( 'Loading...', 'notice' );
 		},
 		onSuccess: function(jsonObj){
-			Rose.ui.statusMessage.hide();
-			displayInfo(jsonObj[0].opencard);
+			Rose.ui.statusMessage.hide(); 
+            // console.log(jsonObj);
+			var jsonDecoded = JSON.decode(jsonObj);
+			displayInfo(jsonDecoded[0].opencard);
 		}
 	}).send();
 	
 	var fxli = new Fx.Morph('opencardli', {duration: 1000})
-	var displayInfo = function(item){ 
+	var displayInfo = function(item){
 		if (typeof item == 'undefined'){
 			$('opencard').set('text', 'Clocked out');
 		} else if(typeof item.opencard == 'undefined') {
 			$('opencard').set('text', 'Clocked out');
 		} else {
-			console.log(item);
 			$('clockbtn').set('html', '<a href=\"#\" id=\"clock_out\" class=\"red\">Clock out</a>');
 			$('timer0tag').set('text', 'You worked: ');
 			displayTimeDiff('opencard', item.opencard.timein, ' - Current');
@@ -223,6 +308,15 @@ document.addEvent('domready', function(){
 	}
 	
 	$$('table#admin-others tr:even').addClass('alt'); 
+	
+	/*
+		export
+	*/
+	CP.overlay.load();
+	
+	$('export').addEvent('click',function(){
+		CP.overlay.open();
+	});         
 	
 	/*
 		edit mode button
@@ -354,7 +448,7 @@ document.addEvent('domready', function(){
 			},
 			onComplete: function(response){
 				$('crud-time').empty().adopt(response);
-				$$('table#admin-time tr:even').addClass('alt');
+				$$('table#admin-time tr:even').addClass('alt');				
 				$$('#crud-time .control .button').addEvent('click',function(){
 					this.getSiblings('.button').removeClass('clicked');
 					if (!this.hasClass('clicked')){
@@ -381,6 +475,7 @@ document.addEvent('domready', function(){
 					t[0] = t[0].substr(0,5);
 					t[1] = t[1].substr(0,5);
 					loadUserTime(uid, 'navpre', t[0], t[1]);
+					return false;
 			  	});
 			
 				$$('#admin-time-nav #nav-nt').addEvent('click',function(){
@@ -388,6 +483,8 @@ document.addEvent('domready', function(){
 					t[0] = t[0].substr(0,5);
 					t[1] = t[1].substr(0,5);
 					loadUserTime(uid, 'navnt', t[0], t[1]);
+					return false;
+					
 			  	});
 				
 		   		/*
@@ -399,15 +496,11 @@ document.addEvent('domready', function(){
 
 		   						  	});
 		   						};*/
-		   		
-			    
-			   		
 			}
 		}).get({'id': uid, 'wk':wk, 'start':start, 'end':end})
 		
 	} 
-	 
-	
+	 	
 });
 
 /*
@@ -424,7 +517,8 @@ document.addEvent('domready', function() {
 	}
 							
 	if($('day-list')!=null){
-		checkOpenCard();
+	    Rose.ui.statusMessage.display( 'Loading...', 'notice' );
+		setTimeout(checkOpenCard,500);
 	} 
 	
 	var Tips1 = new Tips($$('.Tips1'), {
@@ -479,45 +573,7 @@ document.addEvent('domready', function() {
 		});
 	});
 
-	// Handles the status message passed via GET-back
-	/*
-	if( window.location.search.length && window.location.search.indexOf('message=') != -1 ) {
-			
-			var data = new URI(window.location.href).get('data'),
-				msgStr = data.message.replace(/[^a-zA-Z0-9\.\!\?\:\-\\\/\*]/g, ' '),
-				msgType = data.type;
-				
-			// call message class method here...	
-		} */
-	
-
-	/*
-var data = new URI(window.location.href).get('data');
-	var message = data.message.unencode(), 
-		   type = data.type.unencode();
-	
-	var message = data.replace(/[^a-zA-Z0-9\.\!\?\:\-\\\/\*]/g, ' ');
-	
-	switch(type) {
-		case 'success':
-		case 'notice':
-		case 'error':
-			break;
-		default:
-			type = 'notice';
-			break;
-	}
-
-	var el = new Element('span',{
-		'class': type,
-		'text': message
-	});
-	
-	
-	setTimeout(function() {
-		alert(message);
-	}, 1000);
-*/
+   
 
 }); // end domready
 

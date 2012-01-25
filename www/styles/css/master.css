@@ -21,7 +21,7 @@ form#login {
 	}
 
 #rotate-skew-scale-translate {
-	transform:skew(30deg) scale(1.1,1.1) rotate(40deg) translate(10px, 20px);
+	-webkit-transform:skew(30deg) scale(1.1,1.1) rotate(40deg) translate(10px, 20px);
 }
 
 
@@ -273,6 +273,10 @@ ul.dark_list li {
 ul.dark_list li em {
 	text-transform: uppercase;
 	font-size: 12px;             
+}      
+
+li#opencardli{
+    height:26px;
 }
 
 
@@ -439,7 +443,6 @@ table th{
 		
 		table#others .name{
 			color:#fff;
-			//background-color: rgba(70,70,70, 0.1);
 		 	font-size:1.4em;
 		} 
 		
@@ -462,6 +465,8 @@ table th{
 		margin-right: auto;
 		color:#ccc;
 		text-shadow: 0 1px 0px rgba(0,0,0,1);
+		-webkit-user-select: none;
+    	-moz-user-select: none;
 	}
 		table#admin-time tr.in{
 			color:#ccc;	
@@ -474,6 +479,8 @@ div#admin-time-nav{
 	font-size:1.1em;
 	font-weight:400;
 	margin:8px auto;
+	-webkit-user-select: none;
+	-moz-user-select: none; 
 }	
 
 /*
@@ -616,7 +623,7 @@ div.control.sub{
 		cursor: pointer;
 	}
 	
-		div.control a#edit-mode{
+		div.control a#edit-mode, div.control a#export{
 			float:right;
 		}
 		
@@ -753,6 +760,155 @@ h2, table caption {
 	background: url(../img/icons/error.png) 5px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#aa3030), to(#642121), color-stop(1%, #fff), color-stop(2%, #aa3030), color-stop(37%, #aa3030));
     background: url(../img/icons/error.png) 5px 50% no-repeat, -moz-linear-gradient(-90deg, #aa3030, #fff 1%, #aa3030 2%, #aa3030 37%, #642121);
     padding: 1px 7px 4px 25px;
+}
+
+/* Clepbox*/
+
+#cpOverlay { 
+    font-size:11px;
+    font-weight:normal;
+    line-height:1.6;
+	position: absolute;
+	z-index: 9999;
+	top: 150px;
+	background-color:#272727;
+	border:1px solid rgba(100,100,100,0.8);
+	padding:10px;
+}     
+
+#cpOverlay div.submit{
+    position: absolute;
+    height:30px;
+    width:140px;
+    bottom:10px;
+    right: 0px;
+}
+ 
+#cpOverlay div.col-heading{
+    height:30px;
+    width:500px;
+    float:left;
+    font-size:20px;   
+}   
+
+#cpOverlay div.col-tbheading{  
+    color:rgba(0,0,0,0.6);
+	font-weight:700;
+    text-shadow: 0 1px 0px rgba(255,255,255,0.1);
+    height:18px;
+    width:500px;
+    float:left;
+    font-size:12px;
+	background-color:rgba(255,255,255,0.05);
+	border-top:solid #444 1px;
+	border-bottom:solid #444 1px;
+	margin:5px 0;
 } 
+
+#cpOverlay div.col-tbheading div.people{
+    padding-left:13px;
+    float:left;
+    width:186px;
+}              
+
+#cpOverlay div.col-thheading div.period{  
+    float:left;
+    width:300px;
+}        
+
+#cpOverlay div.col-people{
+    padding-left:10px;
+    float:left;
+    width:190px;
+    margin-bottom:50px;
+}               
+
+#cpOverlay div.col-period{
+    float:left;
+    width:300px;   
+    margin-bottom:50px;
+}
+              
+#cpOverlay div.col-period input[type='text']{
+	padding-top:2px;
+	background: rgba(0,0,0,0.2);
+	border: 1px solid rgba(0,0,0,0.2);
+	color: #fff;
+	text-shadow: 0 1px 0 rgba(255,255,255,0.05);
+	-moz-box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+	-webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.05);;
+}
+
+#lbCenter, #lbBottomContainer {
+	position: absolute;
+	z-index: 9999;
+	overflow: hidden;
+	background-color: #fff;
+}
+
+.lbLoading {
+	background: #fff url(../img/lb/loading.gif) no-repeat center;
+}
+
+#lbImage {
+	position: absolute;
+	left: 0;
+	top: 0;
+	border: 10px solid #fff;
+	background-repeat: no-repeat;
+}
+
+#lbPrevLink, #lbNextLink {
+	display: block;
+	position: absolute;
+	top: 0;
+	width: 50%;
+	outline: none;
+}
+
+#lbPrevLink {
+	left: 0;
+}
+
+#lbPrevLink:hover {
+	background: transparent url(../img/lb/prevlabel.gif) no-repeat 0 15%;
+}
+
+#lbNextLink {
+	right: 0;
+}
+
+#lbNextLink:hover {
+	background: transparent url(../img/lb/nextlabel.gif) no-repeat 100% 15%;
+}
+
+#lbBottom {
+	font-family: Verdana, Arial, Geneva, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #666;
+	line-height: 1.4em;
+	text-align: left;
+	border: 10px solid #fff;
+	border-top-style: none;
+}
+
+#lbCloseLink {
+	display: block;
+	float: right;
+	width: 66px;
+	height: 22px;
+	background: transparent url(../img/lb/closelabel.gif) no-repeat center;
+	margin: 5px 0;
+	outline: none;
+}
+
+#lbCaption, #lbNumber {
+	margin-right: 71px;
+}
+
+#lbCaption {
+	font-weight: bold;
+}
+ 
 
 		

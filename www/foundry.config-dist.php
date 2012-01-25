@@ -1,6 +1,6 @@
 <?php
 
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('America/Los_Angeles');
 
 foundry_init(array(
 	'namespace'					=> 'clepsydra',
