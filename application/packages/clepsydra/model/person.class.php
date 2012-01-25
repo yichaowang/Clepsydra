@@ -208,7 +208,7 @@ class person extends \foundry\model {
 		return $t;  
 	} 
 	
-	Public function timeByDay($start=0, $end='now'){ 
+	Public function timeByDay($start=0, $end='now', $sant_unit=true){ 
 		if ($end == 'now') {
 			$end = strtotime('+1 seconds');
 		}
@@ -235,6 +235,7 @@ class person extends \foundry\model {
 					$t[$j]['weekday'] = substr($tpart[$j]['weekday'],0,3);
 					$t[$j]['mday']    = $tpart[$j]['mday'];
 					$t[$j]['month']   = $tpart[$j]['mon'];
+					$t[$j]['yr']      = substr($tpart[$j]['year'],2,2);
 					$t[$j]['cards'][]= array($card['uid'], 'timein' => $card['timein'], 'timeout' => $card['timeout'], $card['person_id'] );
 				}
 			} 		  
@@ -244,24 +245,34 @@ class person extends \foundry\model {
 			return false;
 		}
 		
-		//sanitizing and add unit 
 		$h=0;
-		foreach($t as $n){
-			$h++;
-			$m = $n['time'];
-			if ($m < 60) {
-				$unit = "secs";
-			}elseif ($m < 3600){
-				$m /= 60;
-				$unit = "mins"; 
-			}elseif ($m >= 3600){
-				$m /= 3600;
-				$unit = "hrs";
+		if ($sant_unit == true){
+			foreach($t as $n){
+				$h++;
+				$m = $n['time'];
+				if ($m < 60) {
+					$unit = "secs";
+				}elseif ($m < 3600){
+					$m /= 60;
+					$unit = "mins"; 
+				}elseif ($m >= 3600){
+					$m /= 3600;
+					$unit = "hrs";
+				}
+				$m = number_format($m,0,'.','');
+				$m = $m." ".$unit; 
+				$t[$h]['time']=$m;
 			}
-			$m = number_format($m,0,'.','');
-			$m = $m." ".$unit; 
-			$t[$h]['time']=$m;
+			
+		} else { 
+			foreach($t as $n){
+				$h++;
+				$m = number_format($n['time']/3600,2,'.','');
+				$t[$h]['time'] = $m;
+			}
 		}
+		//sanitizing and add unit 
+		
         
 		return $t;
 	}

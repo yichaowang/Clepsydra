@@ -36,7 +36,7 @@ class auth implements \foundry\middleware\middlewareInterface {
 
 	public function handleRequest($request) {
 		if( !Conf::get($request->package.':requiresAuth') ) {
-			return;
+			return false;
 		}
 		
 		if( !in_array(sprintf('%s:%s', $request->package, $request->controller), 
@@ -46,15 +46,17 @@ class auth implements \foundry\middleware\middlewareInterface {
 		}
 
 		// verify the session
-		$authSess = new AuthSession;
+		$authSess = new AuthSession;   
+		
 		if( !$authSess->verify() ) {
-			$to = URL::build(URL::linkTo('clepsydra:main'), array(
-				'message' => 'You must be logged in.',
-				'type' => 'error',
-				'refer' => $request->query->query
-			));
-			return new \foundry\response\redirect($to);
-		}
+					$to = URL::build(URL::linkTo('clepsydra:main'), array(
+						'message' => 'You must be logged in.',
+						'type' => 'error',
+						'refer' => $request->query->query
+					));
+					return new \foundry\response\redirect($to);
+				}
+		
 
 		// also disable query caching
 		\foundry\model::$disableCache = true;

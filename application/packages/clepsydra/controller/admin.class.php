@@ -15,6 +15,7 @@
   
  Author:
   Mike Joseph <josephm5@msu.edu>
+  Yichao Wang <wangyic3@msu.edu>
   
  License:
   GNU GPL 2.0 - http://opensource.org/licenses/gpl-2.0.php
@@ -209,6 +210,96 @@ class admin extends \foundry\controller {
 			'pay'		=> $pay
 		);
 		
+	}
+	
+	public function export(){
+		$ex_start = $this->request->post('exdate-start', 'specialChars'); 
+		$ex_end = $this->request->post('exdate-end', 'specialChars'); 
+		$people = $this->request->post('people', 'arrayCallback', 'specialChars');
+				
+		$t = time();
+		$pay['nows'] = (date('w', $t) == 0) ? $t : strtotime('last sunday', $t);
+		$pay['nowe'] = $pay['nows'] + 7 * 24 * 60 * 60;
+ 	    $pay['pre']  = $pay['nows'] - 7 * 24 * 60 * 60;
+		$pay['nxt']  = $pay['nowe'] + 7 * 24 * 60 * 60;   
+		
+		$users = M::init('clepsydra:person')->find(); 
+		
+		if ($ex_start!="mm/dd/yyyy" && $ex_end!="mm/dd/yyyy" && ($people)){    
+            $timesheet = array();
+			$timesheet_users = array();
+			$ex_start = explode("/", $ex_start);
+			$ex_end = explode("/", $ex_end);
+			$start_stamp = mktime(0, 0, 0, $ex_start[0], $ex_start[1], $ex_start[2]);
+			$end_stamp = mktime(0, 0, 0, $ex_end[0], $ex_end[1], $ex_end[2]); 
+			
+			for($i=0, $length = ($end_stamp-$start_stamp) / 86400; $i<=$length; ++$i){
+				$key = date("mdy", ($start_stamp+$i*86400));
+				$timesheet[$key] = array("date" => date("m/d/y", ($start_stamp+$i*86400))); 
+			}  
+			
+			for($u_seq=0, $u_count=count($people); $u_seq<$u_count; ++$u_seq){
+				$person = M::init('clepsydra:person')->findByUID($people[$u_seq]);
+				$person_hours = $person->timeByDay($start_stamp,$end_stamp,false);
+				$timesheet_users[$u_seq]['name'] = $person['name'];  
+				foreach($person_hours as $person_card){
+					$key = str_pad($person_card['month'],2,"0",STR_PAD_LEFT) . str_pad($person_card['mday'],2,"0",STR_PAD_LEFT). str_pad($person_card['yr'],2,"0",STR_PAD_LEFT);
+					$timesheet[$key][$u_seq] = $person_card['time'];
+					$timesheet_users[$u_seq]['total_hr'] += $person_card['time'];
+					 
+				}
+			}             
+			
+			// print_r($timesheet_users);			
+			// print_r($timesheet); 
+			
+			// output 
+			
+			header("Content-type: application/csv");
+			header("Content-Disposition: attachment; filename=SNTimesheet". date("Ymd", ($start_stamp))."to".date("Ymd", ($end_stamp)).".csv");
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			
+			echo "Date (mm/dd/yyyy),"; 
+			
+			for ($i=0, $length=count($timesheet_users); $i<$length; ++$i){
+				echo $timesheet_users[$i]['name'] . ",";
+			}  		                            
+			
+			echo "\n";
+
+			foreach ($timesheet as $date => $u_hours){ 
+				echo $u_hours['date'] . ",";
+				for ($i=0, $length<count($timesheet_users); $i<$length; ++$i){
+					if(isset($u_hours[$i])) {
+						echo $u_hours[$i] . ",";
+					} else {
+						echo " - ,";
+					}
+				}
+				echo "\n";
+			} 
+			
+			echo "Total (in hours),";  
+			
+			for ($i=0, $length=count($timesheet_users); $i<$length; ++$i){
+				echo $timesheet_users[$i]['total_hr'] . ",";
+			}
+
+			return array(
+				'export' => 1
+			);
+ 
+		    
+		} else if( $ex_start=="mm/dd/yyyy" || $ex_end=="mm/dd/yyyy" || !isset($people)){
+			echo "Please select the dates and the users to be exported.";
+			return false;
+		}
+		
+		return array(
+			'users' => $users,
+			'pay'   => $pay
+		);
 	}     
 	
 } 

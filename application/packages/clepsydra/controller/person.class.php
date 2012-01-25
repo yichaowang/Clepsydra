@@ -86,10 +86,6 @@ class person extends \foundry\controller {
 	
 	// create clock in action
 	public function clockin(){
-		if ($this->request->query->type != 'json') {
-			return false;
-		}
-
 		$user = M::init('clepsydra:person')->findByUID($this->request->authSession->user);
 		
 		if ($user->active==0 || $user->track==0 || $user->status==1) { 
@@ -115,8 +111,6 @@ class person extends \foundry\controller {
 	
 	// create clock out action
 	public function clockout(){
-		if($this->request->query->type != 'json') {return false;} 
-		
 		$user = M::init('clepsydra:person')->findByUID(
 			$this->request->authSession->user);     	
 	   	
@@ -139,7 +133,7 @@ class person extends \foundry\controller {
 				$card->person_id = $user->uid;
 				$card->save();
 			}else{
-				//**** need work to determine when the last card is not the opencard
+				// need work to determine when the last card is not the opencard
 			}
 		}
 
@@ -149,10 +143,6 @@ class person extends \foundry\controller {
 	}
 	
 	public function opencard(){
-		if($this->request->query->type != 'json') {
-			return false;
-		}
-		
 		$user = M::init('clepsydra:person')->findByUID(
 			$this->request->authSession->user);
 		
@@ -164,7 +154,7 @@ class person extends \foundry\controller {
 				->where('self:person_id = :pid')
 				->bind(array(':pid' => $this->request->authSession->user))
 				->order('timein desc')
-				->find();
+				->find();    
 				
 		foreach( $cards as $card ){
 			$i++;

@@ -5395,7 +5395,7 @@ description: JSON encoder and decoder.
 
 license: MIT-style license.
 
-See Also: <http://www.json.org/>
+SeeAlso: <http://www.json.org/>
 
 requires: [Array, String, Number, Function]
 
@@ -5404,7 +5404,7 @@ provides: JSON
 ...
 */
 
-if (!this.JSON) this.JSON = {};
+if (typeof JSON == 'undefined') this.JSON = {};
 
 //<1.2compat>
 
@@ -5415,40 +5415,58 @@ JSON = new Hash({
 
 //</1.2compat>
 
-Object.append(JSON, {
+(function(){
 
-	$specialChars: {'\b': '\\b', '\t': '\\t', '\n': '\\n', '\f': '\\f', '\r': '\\r', '"' : '\\"', '\\': '\\\\'},
+var special = {'\b': '\\b', '\t': '\\t', '\n': '\\n', '\f': '\\f', '\r': '\\r', '"' : '\\"', '\\': '\\\\'};
 
-	$replaceChars: function(chr){
-		return JSON.$specialChars[chr] || '\\u00' + Math.floor(chr.charCodeAt() / 16).toString(16) + (chr.charCodeAt() % 16).toString(16);
-	},
+var escape = function(chr){
+	return special[chr] || '\\u' + ('0000' + chr.charCodeAt(0).toString(16)).slice(-4);
+};
 
-	encode: function(obj){
-		switch (typeOf(obj)){
-			case 'string':
-				return '"' + obj.replace(/[\x00-\x1f\\"]/g, JSON.$replaceChars) + '"';
-			case 'array':
-				return '[' + String(obj.map(JSON.encode).clean()) + ']';
-			case 'object': case 'hash':
-				var string = [];
-				Object.each(obj, function(value, key){
-					var json = JSON.encode(value);
-					if (json) string.push(JSON.encode(key) + ':' + json);
-				});
-				return '{' + string + '}';
-			case 'number': case 'boolean': return String(obj);
-			case 'null': return 'null';
-		}
-		return null;
-	},
+JSON.validate = function(string){
+	string = string.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@').
+					replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+					replace(/(?:^|:|,)(?:\s*\[)+/g, '');
 
-	decode: function(string, secure){
-		if (typeOf(string) != 'string' || !string.length) return null;
-		if (secure && !(/^[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]*$/).test(string.replace(/\\./g, '@').replace(/"[^"\\\n\r]*"/g, ''))) return null;
-		return eval('(' + string + ')');
+	return (/^[\],:{}\s]*$/).test(string);
+};
+
+JSON.encode = JSON.stringify ? function(obj){
+	return JSON.stringify(obj);
+} : function(obj){
+	if (obj && obj.toJSON) obj = obj.toJSON();
+
+	switch (typeOf(obj)){
+		case 'string':
+			return '"' + obj.replace(/[\x00-\x1f\\"]/g, escape) + '"';
+		case 'array':
+			return '[' + obj.map(JSON.encode).clean() + ']';
+		case 'object': case 'hash':
+			var string = [];
+			Object.each(obj, function(value, key){
+				var json = JSON.encode(value);
+				if (json) string.push(JSON.encode(key) + ':' + json);
+			});
+			return '{' + string + '}';
+		case 'number': case 'boolean': return '' + obj;
+		case 'null': return 'null';
 	}
 
-});
+	return null;
+};
+
+JSON.decode = function(string, secure){
+	if (!string || typeOf(string) != 'string') return null;
+
+	if (secure || JSON.secure){
+		if (JSON.parse) return JSON.parse(string);
+		if (!JSON.validate(string)) throw new Error('JSON could not decode the input; security is enabled and the value is not secure.');
+	}
+
+	return eval('(' + string + ')');
+};
+
+})();
 
 
 /*
@@ -6643,7 +6661,74 @@ if( !window['Rose'] ) {
 		Rose.ui = {};
 	}
 	Rose.ui.statusMessage = new StatusMessage;
-})();
+})();   
+  
+/*
+Popup editing
+*/
+
+var Clepbox = new Class({
+	Implements: Options,
+	
+	options: {
+		width: 400,
+		height: 400
+	},
+	
+	initialize:function(element, options){
+		this.setOptions(options);
+		this.clepbox = new Element("div", {id: "clepbox", styles: {
+			'width': this.options.width,
+			'height': this.options.height,
+			'visibility': 'hidden' 
+		}}).inject(document.body);
+		console.log(this.clepbox); 
+		
+		element.addEvent('click', function(){
+			this.clepbox.setStyles({'visibility':'visible'});
+		}.bind(this));
+	},
+	
+	hide: function(){
+		this.fireEvent('onHide', [this.clepbox]);
+	}
+});
+
+/*
+	clepbox
+*/         
+
+var Clepbox = (function(){
+	//Variables
+	var win = window, 
+	options,
+	//DOM
+	overlay;
+	//init
+	win.addEvent("domready", function(){
+		$(document.body).adopt(
+			$$(
+				overlay = new Element("div", {id:"cpOverlay"})
+			).setStyle("display", "none")
+	   	);
+	});
+	
+	//functions
+	function setup(open){
+	    
+	}
+	
+	//API
+	Elements.implement({
+		clepbox: function(){
+			middle = win.getScrollTop() + (win.getHeight() / 2);
+			width  = 400;
+			heigh  = 500;
+			overlay.setStyles({width: 400, height:500, display: block});
+		}
+	});	
+})
+
 
 
 
