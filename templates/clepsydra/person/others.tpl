@@ -11,7 +11,6 @@
 			<th></th> 
 			<th>Email</th> 
 			<th>Has been<br> here for </th> 
-			<th>Talk to<br> him/her</th> 
 		</tr> 
 		{%for user in users%}
 		<tr> 
@@ -22,7 +21,6 @@
 			</td> 
 			<td>{{user.email}}</td> 
 			<td>{% if user.status == 1 %}{{user.timeTotal('toDay','auto')}}{% endif %}</td> 
-			<td>{% if user.status == 1 %}<img src="{{ 'styles/img/icon_talk.png'|url }}"/>{% endif %}</td> 
 		</tr>
 		{%endfor%}
 	     

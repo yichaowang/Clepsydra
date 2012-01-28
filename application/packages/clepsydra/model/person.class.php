@@ -191,15 +191,15 @@ class person extends \foundry\model {
 		$ts = time();
 		if ($week == 'pre'){
 			$end = (date('w', $ts) == 0) ? $ts : strtotime('next sunday', $ts);
-			$start = $end - 2 * 7 * 24 * 60 * 60;
+			$start = mktime(0,0,0,date('m',$end),date('d',$end)-14,date('Y',$end));
 		} elseif ($week == 'next'){
 			$start = (date('w', $ts) == 0) ? $ts : strtotime('last sunday', $ts);
-			$end = $start + 2 * 7 * 24 * 60 * 60;
+			$end = mktime(0,0,0,date('m',$start),date('d',$start)+14,date('Y',$start));
 		} else {
 			//show one week of the latest time card if no wk specified 
 			$ts = $this->cards->limit(1)->timein;
-			$start =  (date('w', $ts) == 0) ? $ts : strtotime('last sunday', $ts);
-			$end = $start + 1 * 7 * 24 * 60 * 60; 
+			$start =  (date('w', $ts) == 0) ? $ts : strtotime('last sunday', $ts); 
+			$end = mktime(0,0,0,date('m',$start),date('d',$start)+7,date('Y',$start));
 		}
                                         
 		$t['t'] = $this->timeByDay($start,$end);

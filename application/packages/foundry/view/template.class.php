@@ -141,7 +141,7 @@ namespace foundry\view {
 			$loader = new \Twig_Loader_Filesystem($templatePaths);
 
 			$this->handler = new \Twig_Environment($loader, array(
-				'cache' => $this->cache
+				'cache' => false
 			));
 			$this->handler->addExtension(new \foundry\view\twig);
 			

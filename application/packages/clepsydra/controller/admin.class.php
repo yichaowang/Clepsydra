@@ -110,10 +110,8 @@ class admin extends \foundry\controller {
 			return array(
 				'person'=> $person
 			);
-		} elseif ($uname){
-			return array(
-				'uname' => $uname
-			);
+		} else {
+			return array();
 		}
 	   
 	}
@@ -125,6 +123,19 @@ class admin extends \foundry\controller {
 		return array(
 			'person'=> $person
 		);
+	} 
+	
+	public function userdel(){
+		$delid = $this->request->get('id','alnum');
+		
+		if ($delid){
+			$person = M::init('clepsydra:person')->findByUID($delid);
+			$person->delete();
+		}  
+		
+		echo $delid;                   
+		
+		return array();
 	}
 	
 	
@@ -133,14 +144,19 @@ class admin extends \foundry\controller {
 		
 		if ($id) {
 			$person = M::init('clepsydra:person')->findByUID($id);
+			$salt = $person->salt;
 			$message = "User profile saved.";
 		} else {
 			$person = M::init('clepsydra:person');
 			$message = "User profile created.";
+			$salt = "256369";
 		};
 		
 		if( $person && $_POST && !empty($_POST) ) {
-			$person->password   = $this->request->post('password', 'specialChars');           
+			if ($this->request->post('password', 'specialChars')!=null){
+				$person->password   = md5($this->request->post('password', 'specialChars').$salt);           
+			}
+			$person->salt       = $salt;
 			$person->name       = $this->request->post('uname', 'specialChars');
 			$person->email      = $this->request->post('email', 'email');
 			$person->department = $this->request->post('department', 'specialChars');
@@ -175,20 +191,29 @@ class admin extends \foundry\controller {
 			$user = M::init('clepsydra:person')->findByUID($id)->timeByWk($wk);
 			$range['ss'] = $user['start'];
 			$range['es'] = $user['end'];
+			$user_row = M::init('clepsydra:person')->findByUID($id);
+			$user_name = $user_row->name;
 		} else if(($wk=='slet' || $wk=='navpre' || $wk=='navnt') && $sletS!="" && $sletE!=""){
 			$start  	= explode("/",$sletS);
 			$end  		= explode("/",$sletE);
-			$sstamp 	= mktime(0, 0, 0, $start[0], $start[1], (($start[0]<=$end[0]) ? date('Y') : date('Y')-1));
-			$estamp 	= mktime(0, 0, 0, $end[0], $end[1], date('Y'));
+			// $sstamp 	= mktime(0, 0, 0, $start[0], $start[1], (($start[0]<=$end[0]) ? date('Y') : date('Y')-1));
+			// $estamp 	= mktime(0, 0, 0, $end[0], $end[1], date('Y'));
+			
+			$sstamp 	= mktime(0, 0, 0, $start[0], $start[1], $start[2]);
+			$estamp 	= mktime(0, 0, 0, $end[0], $end[1], $end[2]); 
+			
 			if($wk=='navpre'){
-            	$sstamp = strtotime('last sunday', $sstamp);
-				$estamp = $sstamp + 7 * 24 * 60 * 60; 
+            	$sstamp = strtotime('last sunday', $sstamp);   
+				$estamp = mktime(0,0,0,date('m',$sstamp),date('d',$sstamp)+7,date('Y',$sstamp));
 			}
 			if($wk=='navnt'){
             	$sstamp = (date('w', $estamp) == 0) ? $estamp : strtotime('last sunday', $estamp);
-				$estamp = $sstamp + 7 * 24 * 60 * 60; 
+				$estamp = mktime(0,0,0,date('m',$sstamp),date('d',$sstamp)+7,date('Y',$sstamp));
 			}
+			
 			$user['t']	= M::init('clepsydra:person')->findByUID($id)->timeByDay($sstamp,$estamp);
+			$user_row = M::init('clepsydra:person')->findByUID($id);
+			$user_name = $user_row->name;
 			$range['ss'] = $sstamp;
 			$range['es'] = $estamp; 		
 		} 
@@ -207,9 +232,102 @@ class admin extends \foundry\controller {
 			'wk'   		=> $wk,
 			'usertime' 	=> $user['t'],
 			'range'		=> $range,
-			'pay'		=> $pay
+			'pay'		=> $pay,
+			'username'  => $user_name,
+			'userid'    => $id
 		);
 		
+	}   
+	
+	public function usertimeedit(){ 
+   		$cards_id_request = $this->request->get('cards','specialChars');
+        // no avilible filter for JSON in Filter Class
+		$update_json = $_POST['update'];
+		$del_id = $this->request->get('cid','alnum');
+        
+		if ($update_json!=null){   
+			$update_cards = json_decode($update_json);
+			
+			foreach($update_cards as $u_cid => $u_time){
+				$u_in = mktime($u_time[3],$u_time[4],$u_time[5],$u_time[1],$u_time[2],$u_time[0]);
+				$u_out = mktime($u_time[9],$u_time[10],$u_time[11],$u_time[7],$u_time[8],$u_time[6]); 
+				$u_card = M::init('clepsydra:card')->findByUID($u_cid);   
+				$u_card->timein = $u_in;
+				$u_card->timeout = $u_out;
+				$u_card->save();
+			}
+						
+			return array(
+				'is_view' => 0
+			);
+		}   
+		
+		if ($del_id!=null){
+			$d_card = M::init('clepsydra:card')->findByUID($del_id);   
+			$d_card->delete(); 
+			
+			return array(
+				'is_view' => 0
+			);
+		}
+
+        //id array
+		$cards_id = explode("|", $cards_id_request);
+		
+		//output container
+		$cards = array();      
+		
+		foreach ($cards_id as $cid){
+			if ($cid == null){continue;} 
+			$card = M::init('clepsydra:card')->findByUID($cid); 
+			
+			if ($card == null) {continue;} 
+			
+			$cards[] = array(
+				       		'id' => $card->uid,
+							'in' => $card->timein,
+							'out'=> $card->timeout
+			);
+		}
+		
+		return array(        
+			'is_view' => 1,
+        	'cards' => $cards
+		);
+	} 
+	
+	public function usertimeadd(){                    
+		$user_id = $this->request->get('uid','alnum');
+        // no avilible filter for JSON in Filter Class
+		$card_json = $_GET['timeinout'];  
+		
+		
+		
+		if (($user_id!=null) && ($card_json!=null)){
+			$new_card = json_decode($card_json); 
+		    $u_in = mktime($new_card[3],$new_card[4],$new_card[5],$new_card[1],$new_card[2],$new_card[0]);
+			$u_out = mktime($new_card[9],$new_card[10],$new_card[11],$new_card[7],$new_card[8],$new_card[6]);    
+			
+			$card = M::init('clepsydra:card');
+			$card->timein = $u_in;
+			$card->timeout = $u_out;
+			$card->person_id = $user_id;
+			$card->save();
+			
+			return array(
+			 	'is_view' => 0
+			);
+		}           
+		
+		return array(
+			'is_view' => 1
+		);
+	}  
+	
+	public function testtest(){
+		print_r(json_decode('{"name":"Fido","dob":"2010-04-11T22:36:22.436Z","legs":[1,2,3,4]}'));
+		
+		return array();
 	}
 	
 	public function export(){
@@ -241,13 +359,14 @@ class admin extends \foundry\controller {
 			for($u_seq=0, $u_count=count($people); $u_seq<$u_count; ++$u_seq){
 				$person = M::init('clepsydra:person')->findByUID($people[$u_seq]);
 				$person_hours = $person->timeByDay($start_stamp,$end_stamp,false);
-				$timesheet_users[$u_seq]['name'] = $person['name'];  
-				foreach($person_hours as $person_card){
-					$key = str_pad($person_card['month'],2,"0",STR_PAD_LEFT) . str_pad($person_card['mday'],2,"0",STR_PAD_LEFT). str_pad($person_card['yr'],2,"0",STR_PAD_LEFT);
-					$timesheet[$key][$u_seq] = $person_card['time'];
-					$timesheet_users[$u_seq]['total_hr'] += $person_card['time'];
-					 
-				}
+				$timesheet_users[$u_seq]['name'] = $person['name'];
+				if ($person_hours!=null){
+					foreach($person_hours as $person_card){
+						$key = str_pad($person_card['month'],2,"0",STR_PAD_LEFT). str_pad($person_card['mday'],2,"0",STR_PAD_LEFT).str_pad($person_card['yr'],2,"0",STR_PAD_LEFT);
+						$timesheet[$key][$u_seq] = $person_card['time'];
+						$timesheet_users[$u_seq]['total_hr'] += $person_card['time'];
+					}
+				}  
 			}             
 			
 			// print_r($timesheet_users);			
