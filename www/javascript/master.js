@@ -3,6 +3,7 @@ var CP = CP || {};
 CP = {
     export_overlay:{},
     edit_overlay:{},
+    user_timeedit:{},
     options:{
         BaseURI:"/index.php/"
     }
@@ -163,10 +164,107 @@ CP = {
     
     close: function(){
         this._self.destroy();
-        // new Fx.Scroll(document.body).toElement($('crud-controll'));
     }
     
         
+}).init();
+
+(CP.user_timeedit = {
+    init: function(){
+        this._self = new Element("div", {
+			class:"cpOverlay"
+		})
+    },  
+    
+    open: function(cards, e_date){
+        var e = this._self,
+            o = CP.options; 
+            
+         e.setStyles({
+             left    :(window.getWidth()/2-250),
+             width   : 500, 
+             height  :'auto',
+             display :'block'  
+         });   
+
+         new Request.HTML({
+             url: o.BaseURI + '3cabfab8f977ae7d12a3773423acf849/useredittime',
+             
+             onRequest: function(){        
+               	Rose.ui.statusMessage.display( 'Loading...', 'notice' );
+             },			        
+             
+             onComplete: function(response){
+                 var output={},
+                     u_id = $('day-list').get('title'),
+                     c_date;
+                 
+                 Rose.ui.statusMessage.hide();
+                 
+                 e.empty().adopt(response);   
+                 
+                 // e.getElement('div.col-heading').set('text', "Time cards for "+u_name+" on "+e_date);
+                 
+                 e.getElement('input.cancel').addEvents({
+                     click: function(){
+                         CP.user_timeedit.close();
+                     }
+                 });
+                 
+                 e.getElements('td a.delete_row').addEvents({
+                     click: function(){
+                         var cid = this.get('title'),
+                             del_tr = this;
+                                           
+                         new Request.HTML({
+                             url: o.BaseURI + '3cabfab8f977ae7d12a3773423acf849/useredittime',
+                             onRequest: function(){        
+                             },
+                             onComplete: function(){
+                                 del_tr.getParents('tr').destroy();                    
+                                 Rose.ui.statusMessage.display( 'Time card removed. Refreshing...', 'success' );
+                                 setTimeout('window.location.reload()',1000);
+                             }
+                         }).get({'cid':cid});
+                     }
+                 });
+                 
+                 e.getElement('input.submit').addEvents({
+                     click: function(){
+                         e.getElements('tr.timecard').each(function(el){
+                             var card_tr = [],
+                                 card_id;
+                             card_id = el.getElement('td').get('text');
+                             el.getElements('td input').each(function(val){
+                                 card_tr.push(val.value);
+                             })                       
+                             output[card_id] = card_tr;
+                         })
+                         new Request.HTML({
+                             url: o.BaseURI + '3cabfab8f977ae7d12a3773423acf849/useredittime',
+                             onRequest: function(){        
+                             },   
+                             onComplete: function(response){
+                                 e.destroy();     
+                                 Rose.ui.statusMessage.display( 'Time card removed. Refreshing...', 'success' );
+                                 setTimeout('window.location.reload()',1000);
+                             }
+                         }).post('update='+JSON.encode(output));
+
+                         return false;
+                     }
+                 });
+             }   
+         }).get({'cards':cards});   
+         
+         $(document.body).adopt(e);
+    },  
+    
+    close: function(){
+        this._self.destroy();
+    }
+    
+    
 }).init();
 
 /*       
@@ -687,24 +785,33 @@ document.addEvent('domready', function() {
 	if($('day-list')!=null){
 	    Rose.ui.statusMessage.display( 'Loading...', 'notice' );
 		setTimeout(checkOpenCard,500);
+ 
+    	var Tips1 = new Tips($$('.Tips1'), {
+    		initialize:function(){
+    			this.fx = new Fx.Morph(this.toolTip, {duration: 200, wait: false});
+    		},
+    		onShow: function(toolTip) {
+    			this.fx.start({
+    				'opacity' : [0,1]
+    			});
+    		},
+    		onHide: function(toolTip) {
+    			this.fx.start({
+    				'opacity' : [1,0]
+    			});
+    		}
+    	}); 
+    	
+        $$('.Tips1').each(function(el){
+            el.addEvents({
+                click: function(){
+                    var ids = el.getElement('.user-card-ids').get('text');
+                    CP.user_timeedit.open(ids);
+                }
+            })
+        });
 	} 
 	
-	var Tips1 = new Tips($$('.Tips1'), {
-		initialize:function(){
-			this.fx = new Fx.Morph(this.toolTip, {duration: 200, wait: false});
-		},
-		onShow: function(toolTip) {
-			this.fx.start({
-				'opacity' : [0,1]
-			});
-		},
-		onHide: function(toolTip) {
-			this.fx.start({
-				'opacity' : [1,0]
-			});
-		}
-	});
-
 	if($$('table#others')!=null){
 		$$('table#others tr:even').addClass('alt');
 	}

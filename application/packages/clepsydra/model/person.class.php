@@ -252,14 +252,19 @@ class person extends \foundry\model {
 				$m = $n['time'];
 				if ($m < 60) {
 					$unit = "secs";
+					$m = number_format($m,0,'.','');
+					
 				}elseif ($m < 3600){
 					$m /= 60;
-					$unit = "mins"; 
+					$unit = "mins";
+					$m = number_format($m,0,'.','');
+					 
 				}elseif ($m >= 3600){
 					$m /= 3600;
 					$unit = "hrs";
+					$m = number_format($m,2,'.','');
+					
 				}
-				$m = number_format($m,0,'.','');
 				$m = $m." ".$unit; 
 				$t[$h]['time']=$m;
 			}
