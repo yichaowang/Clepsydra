@@ -279,6 +279,16 @@ li#opencardli{
     height:26px;
 }
 
+ul.dark_list li.Tips1{
+    cursor:pointer;
+}      
+
+ul.dark_list li span.user-card-ids{
+    display:none;
+} 
+
+
+
 
 /* Timer */
 

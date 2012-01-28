@@ -6,8 +6,8 @@
 	{% if user.track == 1 and user.active == 1 %}
 	<div id="frame">
 	<div class="grid_12 alpha omega">
-		<ul id="day-list" class="dark_list">
-			<li class="Tips1" id="opencardli">
+		<ul id="day-list" class="dark_list" title="{{user.uid}}">
+			<li id="opencardli">
 				<span id="opencard"></span><br/> 
 				<span id="timer0tag"></span> 
 				<span id="timer0"></span>
@@ -24,7 +24,8 @@
 					{% endif %}
 				{% endfor %}">
 					<em>{{ day.weekday }}. {{ day.month }}/{{ day.mday }}/{{day.yr}}</em><br/>
-					<span>{{ day.time }}</span> 
+					<span>{{ day.time }}</span>
+					<span class="user-card-ids">{% for card in day.cards %}{{card.0}}|{% endfor %}</span> 
 				</li>
 			{% endfor %}
 		</ul>

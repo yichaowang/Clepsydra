@@ -178,6 +178,77 @@ class person extends \foundry\controller {
 		return array(
 			'opencard' => $opencard
 		);
+	}
+	
+	public function useredittime(){
+		$cards_id_request = $this->request->get('cards','specialChars');
+        // no avilible filter for JSON in Filter Class
+		$update_json = $_POST['update'];
+		$user_id = $this->request->authSession->user;
+		$del_id = $this->request->get('cid','alnum');
+        
+		if ($update_json!=null){   
+			$update_cards = json_decode($update_json);
+			
+			foreach($update_cards as $u_cid => $u_time){
+				$u_in = mktime($u_time[3],$u_time[4],$u_time[5],$u_time[1],$u_time[2],$u_time[0]);
+				$u_out = mktime($u_time[9],$u_time[10],$u_time[11],$u_time[7],$u_time[8],$u_time[6]); 
+				$u_card = M::init('clepsydra:card')->findByUID($u_cid); 
+				
+				// check of the person editing the card is the owner of the card 
+				if ($u_card->person_id == $user_id){
+					$u_card->timein = $u_in;
+					$u_card->timeout = $u_out;
+					$u_card->save();
+				} else {
+					continue;
+				}
+			}
+						
+			return array(
+				'is_view' => 0
+			);
+		}   
+		
+		if ($del_id!=null){
+			$d_card = M::init('clepsydra:card')->findByUID($del_id);   
+			
+			// check of the person deleting the card is the owner of the card 
+			if ($d_card->person_id == $user_id){
+				$d_card->delete();       
+			}
+			
+			return array(
+				'is_view' => 0
+			);
+		}
+
+        //id array
+		$cards_id = explode("|", $cards_id_request);
+		
+		//output container
+		$cards = array();      
+		
+		foreach ($cards_id as $cid){
+			if ($cid == null){continue;} 
+			$card = M::init('clepsydra:card')->findByUID($cid); 
+			
+			if ($card == null) {continue;}
+
+			if ($card->person_id != $user_id){continue;};
+			
+			$cards[] = array(
+				       		'id' => $card->uid,
+							'in' => $card->timein,
+							'out'=> $card->timeout
+			);
+		}
+		
+		return array(        
+			'is_view' => 1,
+        	'cards' => $cards
+		);
+   		
 	} 
 	
 	public function others(){
