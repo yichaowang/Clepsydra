@@ -1,6 +1,178 @@
-/*------Yichao--------*/    
+var CP = CP || {};
 
-/*
+CP = {
+    export_overlay:{},
+    edit_overlay:{},
+    options:{
+        BaseURI:"/index.php/"
+    }
+}; 
+   
+
+(CP.export_overlay = {
+    init: function(){
+        var o = CP.options;
+
+        this._self = new Element("div", {
+			class:"cpOverlay"
+		})
+		 
+		// request overlay's html content from tpl
+		new Request.HTML({
+			url: o.BaseURI + 'admin/export',
+			onRequest: function(){
+			},			
+			onComplete: function(response){				
+				CP.export_overlay._self.adopt(response);
+			}   
+		}).send();      
+    },  
+    
+    open: function(){ 
+        var e = this._self;
+        
+        $(document.body).adopt(e);
+            
+        e.setStyles({
+            left    :(window.getWidth()/2-250),
+            width   : 500, 
+            height  :'auto',
+            display :'block'  
+        });  
+        
+        
+        e.getElements('input[name=period]').addEvents({
+            click:function(){
+                var period = this.get('value'),
+                start, 
+                end;
+
+                start = period.split("|")[0];
+                end = period.split("|")[1];
+                
+                e.getElements('input[name=exdate-start]').set('value',start);
+                e.getElements('input[name=exdate-end]').set('value',end);
+            }
+        });
+
+        e.getElement('input.cancel').addEvents({
+            click: function(){
+                CP.export_overlay.close();
+            }
+        });
+    },
+    
+    close: function(){
+        this._self.destroy();
+    }   
+    
+}).init();   
+          
+(CP.edit_overlay = {
+    init: function(){
+        this._self = new Element("div", {
+			class:"cpOverlay"
+		})
+    },  
+    
+    open: function(cards, e_date){
+        var e = this._self,
+            o = CP.options; 
+            
+         e.setStyles({
+             left    :(window.getWidth()/2-250),
+             width   : 500, 
+             height  :'auto',
+             display :'block'  
+         });   
+
+         new Request.HTML({
+             url: o.BaseURI + 'admin/usertimeedit?t=' + Math.random(),
+             
+             onRequest: function(){        
+               	Rose.ui.statusMessage.display( 'Loading...', 'notice' );
+             },			        
+             
+             onComplete: function(response){
+                 var output={},
+                     u_name=$$('.control.sub').get('title'),
+                     u_id = $('admin-time').get('title'),
+                     c_date;
+                 
+                 Rose.ui.statusMessage.hide();
+                 
+                 e.empty().adopt(response);   
+                 
+                 e.getElement('div.col-heading').set('text', "Time cards for "+u_name+" on "+e_date);
+                 
+                 e.getElement('input.cancel').addEvents({
+                     click: function(){
+                         CP.edit_overlay.close();
+                     }
+                 });
+                 
+                 e.getElements('td a.delete_row').addEvents({
+                     click: function(){
+                         var cid = this.get('title'),
+                             del_tr = this;
+                                           
+                         new Request.HTML({
+                             url: o.BaseURI + 'admin/usertimeedit',
+                             onRequest: function(){        
+                             },
+                             onComplete: function(){
+                                 Rose.ui.statusMessage.display( 'Saved.', 'success' );
+                                 del_tr.getParents('tr').destroy();    
+                                 CP.loadUserTime(u_id, 'all'); 								
+                             }
+                         }).get({'cid':cid});
+                     }
+                 });
+                 
+                 e.getElement('input.submit').addEvents({
+                     click: function(){
+                         e.getElements('tr.timecard').each(function(el){
+                             var card_tr = [],
+                                 card_id;
+                             card_id = el.getElement('td').get('text');
+                             el.getElements('td input').each(function(val){
+                                 card_tr.push(val.value);
+                             })                       
+                             output[card_id] = card_tr;
+                         })
+                         new Request.HTML({
+                             url: o.BaseURI + 'admin/usertimeedit',
+                             onRequest: function(){        
+                             },   
+                             onComplete: function(response){
+                                Rose.ui.statusMessage.display( 'Saved.', 'success' );
+                                CP.loadUserTime(u_id, 'all');
+                                e.destroy();     
+                                new Fx.Scroll(document.body).toElement($('crud-controll'));
+                             }
+                         }).post('update='+JSON.encode(output));
+
+                         return false;
+                     }
+                 });
+             }   
+         }).get({'cards':cards});   
+         
+         $(document.body).adopt(e);
+    },  
+    
+    close: function(){
+        this._self.destroy();
+        // new Fx.Scroll(document.body).toElement($('crud-controll'));
+    }
+    
+        
+}).init();
+
+/*       
+    Author: Yichao Wang
+    Time: March 2011
+
 	clockIn();     	   					Call Person Class clockIn , then checkOpenCard()
 	clockOut();         				Call Person Class clockOut, then checkOpenCard()
 	checkOpenCard();    				Ajax check current state, and display info. Call updateTotalPanel() if is check in.
@@ -17,92 +189,8 @@
 										2: total time to month timer
 										3: total time to week timer
 										4: total time today timer  
-*/    
-
-var CP = CP || {};
-
-CP = {
-    overlay:{},
-    options:{
-        BaseURI:"/index.php/"
-    }
-}; 
-   
-
-(CP.overlay = {
-    init: function(){
-        var o = CP.options;
-
-        this._self = new Element("div", {
-			id:"cpOverlay"
-		})
-		 
-		// request overlay's html content from tpl
-		new Request.HTML({
-			url: o.BaseURI + 'admin/export',
-			onRequest: function(){
-			},			
-			onComplete: function(response){				
-				CP.overlay._self.adopt(response);
-			}   
-		}).send();   
-		
-    },      
-    
-    load: function(){
-        var e = this._self;
-        e.setStyles({
-            display :'none',
-            width   :1,
-            height  :1
-        });           
-                  
-        $(document.body).adopt(e);
-    },
-    
-    open: function(){ 
-        var e = this._self;
-            
-        e.setStyles({
-            left    :(window.getWidth()/2-250),
-            width   : 500, 
-            height  :'auto',
-            display :'block'  
-        });  
-        
-        e.getElements('input[name=period]').addEvents({
-            click:function(){
-                var period = this.get('value'),
-                start, 
-                end;
-
-                start = period.split("|")[0];
-                end = period.split("|")[1];
-                
-                e.getElements('input[name=exdate-start]').set('value',start);
-                e.getElements('input[name=exdate-end]').set('value',end);
-            }
-        })
-
-        e.getElement('input.cancel').addEvents({
-            click: function(){
-                CP.overlay.close();
-            }
-        })
-    },
-    
-    close: function(){
-        var e = CP.overlay._self;
-        e.setStyles({
-            display: 'none'
-        });
-    }   
-    
-}).init();
-
-/*
-	Setting Base URI
 */
+
 var BaseURI = "/index.php/";
 
 var clockIn = function(){
@@ -172,7 +260,6 @@ var clockOut = function(){
 }
 
 var checkOpenCard = function(){ 
-    console.log('ran');
 	var request = new Request({
 		url: BaseURI + '3cabfab8f977ae7d12a3773423acf849/opencard.json?t=' + Math.random(),
 		method: 'get',
@@ -180,7 +267,6 @@ var checkOpenCard = function(){
 		},
 		onSuccess: function(jsonObj){
 			Rose.ui.statusMessage.hide(); 
-            // console.log(jsonObj);
 			var jsonDecoded = JSON.decode(jsonObj);
 			displayInfo(jsonDecoded[0].opencard);
 		}
@@ -226,7 +312,6 @@ var updateTotalPanel = function(){
 			timerids[timer_i]=setTimeout('updateToltime('+value+',"'+id+'")', 36000);
 			timer_i++; 
 			if (timer_i==4){timer_i=1};
-			//console.log(timerids);
 		}  
 		$('totalhr').getElements('div').getElements('span').each(function(div){
 			if (div.get('id').toString()=="t-today"){
@@ -302,7 +387,7 @@ document.addEvent('domready', function(){
 				Rose.ui.statusMessage.display( msgStr, msgType );	
 	} 
 	
-	
+	// determine if its in the admin page
 	if($('admin-others')==null){
 		return;
 	}
@@ -311,12 +396,11 @@ document.addEvent('domready', function(){
 	
 	/*
 		export
-	*/
-	CP.overlay.load();
+	*/     
 	
 	$('export').addEvent('click',function(){
-		CP.overlay.open();
-	});         
+		CP.export_overlay.open();
+	}); 
 	
 	/*
 		edit mode button
@@ -325,8 +409,7 @@ document.addEvent('domready', function(){
 		$('edit-mode').addEvent('click', function(){
 			if ($('edit-mode').hasClass('clicked')){
 				$('edit-mode').removeClass('clicked');
-				$$('#add-user + input').removeProperty('readonly');
-				$$('#add-user + input').removeEvents('click');
+				$$('a#add-user').removeClass('off');
 				$$('#admin-others tr[class!=title]').each(function(el){
 					if (!el.hasClass('in')){
 						el.tween('color','#444');
@@ -336,11 +419,8 @@ document.addEvent('domready', function(){
 					$('crud-time').empty();					
 				});
 			}else{
-				$('edit-mode').addClass('clicked');
-				$$('#add-user + input').set('readonly','readonly');
-				$$('#add-user + input').addEvent('click', function(){
-					Rose.ui.statusMessage.display( 'Please exit editing mode first.', 'error' );
-				});
+				$('edit-mode').addClass('clicked'); 
+				$$('a#add-user').addClass('off');
 				$$('#admin-others tr[class!=title]').each(function(el){
 					new Fx.Scroll(document.body).toTop().chain(function(){
 						$('crud-form').empty(); 
@@ -357,20 +437,51 @@ document.addEvent('domready', function(){
 									Rose.ui.statusMessage.display( 'Loading...', 'notice' );
 								},
 								onComplete: function(response){
-										Rose.ui.statusMessage.hide();          
+										Rose.ui.statusMessage.hide();
+										
+										//load profile part          
 										$('crud-form').empty().adopt(response);
 									  	$$('#crud-form #reset').addEvent('click', function(){
-											if (confirm('Are you sure you want to continue? All your unsaved information will be lost.')){                   
 												Rose.ui.statusMessage.display( 'User profile unsaved.', 'error' );
 												new Fx.Scroll(document.body).toTop().chain(function(){
-													$$('#add-user + input').set('value','');
-													$('crud-form').empty();
-													$('crud-time').empty();					
-												});
-											} 									
+    												$('crud-form').empty();
+    												$('crud-time').empty();
+    											});						
 										});
+										
+										$$('#crud-form a.del-button').addEvents({
+										    click: function(){
+                                                if (confirm('All information will be deleted. Continue?')){
+                                                    new Request.HTML({
+                                                        url: BaseURI + 'admin/userdel',
+                                                    	onComplete: function(response){                     
+                                                    	    Rose.ui.statusMessage.display('User Deleted. Refreshing...', 'success');
+                                                            setTimeout(function(){
+                                                                window.location = BaseURI + "admin";
+                                                            },1000);
+                                                    	} 
+                                                    }).get({'id':el.get('id')});                                                                            
+                                                };
+										    }
+										});      
+
+                                        $$('a.pw-update').addEvents({
+                                            click: function(){
+                                                e = new Element('input', {
+                                                    type: 'password',
+                                                    name: 'password',
+                                                    size: 20
+                                                })
+                                                
+                                                e.replaces(this).focus();
+                                            }
+                                        })
+									           
+										//load time part 
+										loadUserTime(el.get('id'), 'all'); 
+										
 										new Fx.Scroll(document.body).toElement($('crud-controll'));
-										loadUserTime(el.get('id'), 'all');
+										
 								}
 						    }).get({'id':el.get('id')});
 						}
@@ -387,51 +498,31 @@ document.addEvent('domready', function(){
 	/*
 		add user
 	*/
-	$$('#add-user + input').addEvent('keyup', function(e){		
-		if (this.value.length >= 3 && $('userform-create')==null){
-				new Fx.Scroll(document.body).toElement($('crud-controll'));			
-				new Request.HTML({
-					url: BaseURI + 'admin/userform',
-					onRequest: function(){
-						Rose.ui.statusMessage.display( 'Loading...', 'notice' );
-					},
-					onComplete: function(response){
-						Rose.ui.statusMessage.hide();
-	                	$('crud-form').empty().adopt(response);
-						$$('#crud-form #reset').addEvent('click', function(){
-						   	if (confirm('Are you sure you want to continue? All your information will be lost.')){
-								Rose.ui.statusMessage.display( 'User profile unsaved.', 'error' ); 
-								new Fx.Scroll(document.body).toTop().chain(function(){
-									$$('#add-user + input').set('value','');
-									$('crud-form').empty();
-									$('crud-time').empty();					
-								});
-							}			
-						});  
-						$('edit-mode').removeClass('clicked');
-						$$('#admin-others tr[class!=title]').each(function(el){
-							if (!el.hasClass('in')){
-								el.tween('color','#444');
-							}
-							el.removeEvents();
-						}); 
-					}			
-				}).post({'uname': this.value});
-			   		
-		}
-		if (this.value.length >= 0 && $('userform-create')!=null){
-			
-			if ($('form-type').get('text')=="Add new user:"){				
-				$('uname').value = Slick.find(document, '#add-user + input').value
-			} 
-		}
-		
-	   	if (this.value.length == 0){
-			new Fx.Scroll(document.body).toTop().chain(function(){
-				$('crud-form').empty();
-			    $('crud-time').empty();
-			});
-	   	}        
+	$$('a#add-user').addEvent('click', function(e){	
+	    if(this.hasClass('off')){
+	        Rose.ui.statusMessage.display( 'Please exit editing mode first.', 'error' );
+	    } else if ($('userform-create')==null){
+            new Fx.Scroll(document.body).toElement($('crud-controll'));			
+            new Request.HTML({
+                url: BaseURI + 'admin/userform',
+                onRequest: function(){
+                    Rose.ui.statusMessage.display( 'Loading...', 'notice' );
+                },
+                onComplete: function(response){
+                    Rose.ui.statusMessage.hide();
+                    $('crud-form').empty().adopt(response); 
+                    
+                    $$('#crud-form #reset').addEvent('click', function(){
+                        Rose.ui.statusMessage.display( 'User profile unsaved.', 'error' ); 
+                        new Fx.Scroll(document.body).toTop().chain(function(){
+                            $('crud-form').empty();
+                            $('crud-time').empty();					
+                        });  
+                    });
+                }			
+                }).post({'uname': this.value});
+
+            } 
 	});
 	
 	/*
@@ -440,7 +531,6 @@ document.addEvent('domready', function(){
 			wk: 'pre','next','all','navpre','navnt'
 	*/	
 	var loadUserTime = function(uid, wk, start, end){
-		//console.log(uid);
 		new Request.HTML({
 			url: BaseURI + 'admin/usertime',
 			onRequest: function(){
@@ -472,34 +562,112 @@ document.addEvent('domready', function(){
 				
 				$$('#admin-time-nav #nav-pre').addEvent('click',function(){
 					var t = $('admin-time-nav').get('text').split('- ');
-					t[0] = t[0].substr(0,5);
-					t[1] = t[1].substr(0,5);
+					t[0] = t[0].substr(0,10);
+					t[1] = t[1].substr(0,10);
 					loadUserTime(uid, 'navpre', t[0], t[1]);
 					return false;
 			  	});
 			
 				$$('#admin-time-nav #nav-nt').addEvent('click',function(){
 					var t = $('admin-time-nav').get('text').split('- ');
-					t[0] = t[0].substr(0,5);
-					t[1] = t[1].substr(0,5);
+					t[0] = t[0].substr(0,10);
+					t[1] = t[1].substr(0,10);
 					loadUserTime(uid, 'navnt', t[0], t[1]);
 					return false;
-					
-			  	});
+			  	});     
+			  	
+                $$('tr.admin-time-row span.icon-pencil').each(function(e){
+                    e.addEvent('click',function(){
+                        new Fx.Scroll(document.body).toTop();
+                        CP.edit_overlay.open(this.get('title'), this.getParents('tr').getElement('.t-date').get('text'));
+                    })
+                })
 				
-		   		/*
-		   		if($$('#crud-time .control a#all').hasClass('clicked')=='true' ){
-		   							new Element('a', {id:'nav-pre', class:"btn-plain", styles:{'margin-right':'5px'}, html:'&laquo'}).inject($('admin-time-export'), 'before');
-		   							new Element('a', {id:'nav-next', class:"btn-plain", html:'&raquo'}).inject($('admin-time-export'), 'before');          
-		   							
-		   							$$('#admin-time-nav #nav-pre').addevent('click',function(){
+		   		$$('a.add-time-card').addEvents({
+		   		    click:function(){
+                        var o = CP.options,
+                            e = new Element("div", {
+                    			class:"cpOverlay"
+                    		}),
+                    		u_name =$$('.control.sub').get('title'),
+                            u_id = $('admin-time').get('title');
+                    		
+                    		$$('.cpOverlay').destroy();
+                    		
+                        new Request.HTML({
+                            url: o.BaseURI + 'admin/usertimeadd',
+                            onRequest: function(){        
+                                
+                            },			        
+                            onComplete: function(response){
+                                e.adopt(response);
+                                e.setStyles({
+                                    left    :(window.getWidth()/2-250),
+                                    width   : 500, 
+                                    height  :'auto',
+                                    display :'block'  
+                                }); 
+                                
+                                e.getElement('div.col-heading').set('text',"Add Timecard for "+u_name);  
+                                
+                                // e.getElement('div.col-heading').set('text', "Time cards for "+u_name+" on "+e_date);
+                                
+                                
+                                e.getElement('input.cancel').addEvents({
+                                    click: function(){
+                                        e.destroy();
+                                    }
+                                }); 
 
-		   						  	});
-		   						};*/
+                                e.getElement('input.submit').addEvents({
+                                    click: function(){
+                                        var timeinout = [],
+                                        f_validation = 1;
+
+                                        e.getElements('td input').each(function(val){
+                                            if (val.value && f_validation){
+                                                timeinout.push(val.value);
+                                            } else {
+                                                Rose.ui.statusMessage.display( 'Some boxes are empty. Please double check.', 'error' ); 
+                                                f_validation = 0;
+                                                return;
+                                            }
+                                        });
+
+                                        if (!f_validation) return false;  
+
+                                        new Request.HTML({
+                                            url: o.BaseURI + 'admin/usertimeadd',
+                                            onRequest: function(){
+                                            },   
+                                            onComplete: function(response){
+                                                Rose.ui.statusMessage.display( 'Saved.', 'success' ); 
+                                                CP.loadUserTime(u_id, 'all');
+                                                e.destroy();
+                                                
+                                                new Fx.Scroll(document.body).toElement($('crud-controll'));
+                                            }
+                                        }).get({'uid':u_id, 'timeinout':JSON.encode(timeinout)});
+
+                                        return false;
+                                    }
+                                });
+
+                                $(document.body).adopt(e);     
+                                
+                                new Fx.Scroll(document.body).toTop();
+                            }
+                        }).get();
+                        
+		   		        return false;
+		   		    }
+		   		})
 			}
 		}).get({'id': uid, 'wk':wk, 'start':start, 'end':end})
 		
-	} 
+	}
+	
+	CP.loadUserTime = loadUserTime; 
 	 	
 });
 

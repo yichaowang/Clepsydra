@@ -6,7 +6,7 @@
 {% block content %}
 <div id="frame">
    	<div class="control grid_12 alpha omega">
-		<a id="edit-mode" class="button">Edit User</a>
+		<a id="edit-mode" class="button">Edit Profile &amp Time</a>
 		<a id="export" class="button">Export</a>
 		<div class="clear"></div>   	
 	</div>
@@ -19,7 +19,6 @@
 			<th>TO WEEK</th>
 			<th>TO MONTH</th> 
 			<th>TO YEAR</th> 
-			<th>CHAT</th>	
 		<tr>		 
 		{%for user in users%}
 		<tr {% if user.status == 1 %} class="in" {% endif %} id="{{user.uid}}"> 
@@ -29,14 +28,12 @@
 			<td>{{user.timeTotal('toWeek','auto')}} </td> 
 			<td>{{user.timeTotal('toMonth','auto')}}</td> 
 			<td>{{user.timeTotal('toYear','auto')}} </td>  
-			<td>{% if user.status == 1 %}<img src="{{ 'styles/img/icon_talk.png'|url }}"/>{% endif %}</td> 
 		</tr>
 		{%endfor%}                        
 		</table>
 	</div>
 	<div id="crud-controll" class="control grid_12 alpha omega">
-		<span class="description" id="add-user">ADD NEW:</span>
-		<input type="text" size="20" />
+		<a type="button" class="s-button" id="add-user">Add New User</a>
 	</div>
 	<div id="crud-form" class="grid_5 omega">
 

@@ -471,6 +471,19 @@ table th{
 		table#admin-time tr.in{
 			color:#ccc;	
 		}   
+		                
+		table#admin-time td.edit{   
+		    height:27px;
+		    vertical-align:middle;
+		}
+		
+		table#admin-time .icon-pencil{
+		    display:block;
+		    background-image:url(../img/icon-pencils.png);
+		    width:12px;
+		    height:12px;
+		    cursor:pointer;
+		}
 /*
 	Admin-time
 */
@@ -563,8 +576,8 @@ form{
 	
 	form label {
 	  width: 170px; 
-	}   
-
+	} 
+	
 form.userform{
 	border-right: 1px solid rgba(0,0,0,0.2);
 	-moz-box-shadow: 1px 0 0 rgba(255,255,255,0.05);
@@ -614,7 +627,7 @@ div.control.sub{
 		float:left;
 	}
 
-	div.control a.button{
+	div.control a.button, a.add-time-card, a.s-button{
 		color:#fff;
 		margin:0px 3px 0 3px;
 		background: -moz-linear-gradient(top, #414141 0%, #313131 100%); 
@@ -627,13 +640,13 @@ div.control.sub{
 			float:right;
 		}
 		
-	div.control a.button:hover{
+	div.control a.button:hover, a.add-time-card:hover, a.s-button:hover{
 		background: -moz-linear-gradient(top, #454545 0%, #353535 100%);
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#454545), color-stop(100%,#353535));
 		border:solid #19811a 1px; 
 	}
 
-	div.control a.button.clicked{
+	div.control a.button.clicked, a.add-time-card:active, a.s-button:active{
 		background: -moz-linear-gradient(top, #313131 0%, #414141 100%); 
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#313131), color-stop(100%,#414141));
 		border:solid #046B26 1px; 
@@ -669,6 +682,35 @@ div.control.sub{
 		a#admin-time-export{
 			margin-top:-4px;
 			float:right;
+		}
+		
+		a.add-time-card{
+		    margin-top:10px;
+		    margin-left:10px;
+		    font-weight:normal;
+            float:left;
+		    padding:5px 6px 5px 6px;
+		    border:solid #333 1px;
+		} 
+		
+		a.inform-button{
+		    font-size:11px;
+		    display:inline-block; 
+		    margin-top:1px;
+    	    font-weight:normal;
+    	    padding:2px 4px;
+    	    border:solid #333 1px;
+                    
+		}  
+		
+		a.del-button{
+		    display:block;
+            width:65px;
+		    margin-top:10px;
+		    margin-left:-2px;
+		    font-weight:normal;
+		    padding:5px 6px 5px 6px;
+		    border:solid #444 1px;
 		}
 	/*
 		input
@@ -762,9 +804,9 @@ h2, table caption {
     padding: 1px 7px 4px 25px;
 }
 
-/* Clepbox*/
+/* Overlay */
 
-#cpOverlay { 
+.cpOverlay { 
     font-size:11px;
     font-weight:normal;
     line-height:1.6;
@@ -776,7 +818,7 @@ h2, table caption {
 	padding:10px;
 }     
 
-#cpOverlay div.submit{
+.cpOverlay div.submit{
     position: absolute;
     height:30px;
     width:140px;
@@ -784,14 +826,14 @@ h2, table caption {
     right: 0px;
 }
  
-#cpOverlay div.col-heading{
+.cpOverlay div.col-heading{
     height:30px;
     width:500px;
     float:left;
     font-size:20px;   
 }   
 
-#cpOverlay div.col-tbheading{  
+.cpOverlay div.col-tbheading{  
     color:rgba(0,0,0,0.6);
 	font-weight:700;
     text-shadow: 0 1px 0px rgba(255,255,255,0.1);
@@ -805,31 +847,31 @@ h2, table caption {
 	margin:5px 0;
 } 
 
-#cpOverlay div.col-tbheading div.people{
+.cpOverlay div.col-tbheading div.people{
     padding-left:13px;
     float:left;
     width:186px;
 }              
 
-#cpOverlay div.col-thheading div.period{  
+.cpOverlay div.col-thheading div.period{  
     float:left;
     width:300px;
 }        
 
-#cpOverlay div.col-people{
+.cpOverlay div.col-people{
     padding-left:10px;
     float:left;
     width:190px;
     margin-bottom:50px;
 }               
 
-#cpOverlay div.col-period{
+.cpOverlay div.col-period{
     float:left;
     width:300px;   
     margin-bottom:50px;
 }
               
-#cpOverlay div.col-period input[type='text']{
+.cpOverlay div.col-period input[type='text']{
 	padding-top:2px;
 	background: rgba(0,0,0,0.2);
 	border: 1px solid rgba(0,0,0,0.2);
@@ -837,78 +879,45 @@ h2, table caption {
 	text-shadow: 0 1px 0 rgba(255,255,255,0.05);
 	-moz-box-shadow: 0 1px 0 rgba(255,255,255,0.05);
 	-webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.05);;
+}            
+
+.cpOverlay table.usertime-edit, .cpOverlay table.usertime-add{
+    width:480px; 
+    margin-bottom:50px; 
+    font-size:11px;
 }
 
-#lbCenter, #lbBottomContainer {
-	position: absolute;
-	z-index: 9999;
-	overflow: hidden;
-	background-color: #fff;
+.cpOverlay table.usertime-edit td, .cpOverlay table.usertime-add td{
+    text-align:center;
 }
 
-.lbLoading {
-	background: #fff url(../img/lb/loading.gif) no-repeat center;
+.cpOverlay table.usertime-edit input[type='text'], .cpOverlay table.usertime-add input[type='text']{
+    width:18px; 
+    padding-top:2px;
+	background: rgba(0,0,0,0.2);
+	border: 1px solid rgba(0,0,0,0.2);
+	color: #fff;
+	text-shadow: 0 1px 0 rgba(255,255,255,0.05);
+	-moz-box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+	-webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.05);;
+}  
+
+.cpOverlay table.usertime-edit input.yr, .cpOverlay table.usertime-add input.yr{
+    width:30px;
+}           
+
+.cpOverlay table.usertime-edit td a.delete_row{
+    text-decoration:none;
+    color:#eee;
+}             
+
+.cpOverlay table.usertime-edit td a.delete_row:hover{
+    text-decoration:underline;
 }
 
-#lbImage {
-	position: absolute;
-	left: 0;
-	top: 0;
-	border: 10px solid #fff;
-	background-repeat: no-repeat;
-}
 
-#lbPrevLink, #lbNextLink {
-	display: block;
-	position: absolute;
-	top: 0;
-	width: 50%;
-	outline: none;
-}
+ 
 
-#lbPrevLink {
-	left: 0;
-}
-
-#lbPrevLink:hover {
-	background: transparent url(../img/lb/prevlabel.gif) no-repeat 0 15%;
-}
-
-#lbNextLink {
-	right: 0;
-}
-
-#lbNextLink:hover {
-	background: transparent url(../img/lb/nextlabel.gif) no-repeat 100% 15%;
-}
-
-#lbBottom {
-	font-family: Verdana, Arial, Geneva, Helvetica, sans-serif;
-	font-size: 10px;
-	color: #666;
-	line-height: 1.4em;
-	text-align: left;
-	border: 10px solid #fff;
-	border-top-style: none;
-}
-
-#lbCloseLink {
-	display: block;
-	float: right;
-	width: 66px;
-	height: 22px;
-	background: transparent url(../img/lb/closelabel.gif) no-repeat center;
-	margin: 5px 0;
-	outline: none;
-}
-
-#lbCaption, #lbNumber {
-	margin-right: 71px;
-}
-
-#lbCaption {
-	font-weight: bold;
-}
  
 
 		
