@@ -1,3 +1,7 @@
 clepsydra.config.php
-private
 www/foundry.config.php
+favicon.ico
+www/error_log
+www/phpinfo.php
+private/
+cron/
