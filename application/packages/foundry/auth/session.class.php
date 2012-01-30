@@ -66,7 +66,7 @@ class session {
 		// SQLite only creates a table once, so just do this on every request
 		// to make sure the table exists
 		$q = 'create table session (last_active int, id varchar(32), '.
-			'nonce int, context varchar(255), data text)';
+			'nonce int, context varchar(255), data text, ipadd varchar(255))';
 		$this->dbh->exec($q);
 		
 	}
@@ -85,21 +85,27 @@ class session {
 	  _void_
 	*/
 	public function create() {
+		// $this->id = md5(time()+rand());
+		// $this->nonce = AuthUtil::generateSalt();
+		
 		$this->id = md5(time()+rand());
-		$this->nonce = AuthUtil::generateSalt();
+		$this->nonce = 123456;
+		
 		$this->data = array();
 		$this->last_active = time();
-		$this->context = Conf::get('namespace');
+		$this->context = Conf::get('namespace'); 
+		$this->ip = $this->getIP();
 		
-		$q = 'insert into session (last_active, id, nonce, context, data) '.
-			'values (:la, :cid, :nid, :ctx, :dta)';
+		$q = 'insert into session (last_active, id, nonce, context, data, ipadd) '.
+			'values (:la, :cid, :nid, :ctx, :dta, :ip)';
 		$stmt = $this->dbh->prepare($q);
 		$stmt->execute(array(
 			':la'	=> $this->last_active,
 			':cid'	=> $this->id,
 			':nid'	=> $this->nonce,
 			':ctx'	=> $this->context,
-			':dta'	=> serialize(array())
+			':dta'	=> serialize(array()),
+			':ip'   => $this->ip
 		));
 
 		$this->setCookie();
@@ -140,7 +146,7 @@ class session {
 			return false;
 		}
 
-		$this->nonce = AuthUtil::generateSalt();
+		// $this->nonce = AuthUtil::generateSalt();
 		$this->last_active = time();
 		
 		$this->setCookie();
@@ -232,6 +238,33 @@ class session {
 		$this->rowid = $row['rowid'];
 		
 		return true;
+
+	}   
+	
+	/*
+	 Method: getIP
+	  Sets cookie key
+	  
+	 Access:
+	  private
+	  
+	 Parameters:
+	  _void_
+	  
+	 Returns:
+	  _void_
+	*/
+	private function getIP() { 
+		$ip; 
+		if (getenv("HTTP_CLIENT_IP")) 
+			$ip = getenv("HTTP_CLIENT_IP"); 
+		else if(getenv("HTTP_X_FORWARDED_FOR")) 
+			$ip = getenv("HTTP_X_FORWARDED_FOR"); 
+		else if(getenv("REMOTE_ADDR")) 
+			$ip = getenv("REMOTE_ADDR"); 
+		else 
+			$ip = "UNKNOWN";
+		return $ip; 
 
 	}
 	
