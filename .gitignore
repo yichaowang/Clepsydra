@@ -5,3 +5,4 @@ www/error_log
 www/phpinfo.php
 private/
 cron/
+www.txt
