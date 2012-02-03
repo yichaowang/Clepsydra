@@ -328,12 +328,12 @@ class session {
 	  _void_
 	*/
 	public function destroy() {
-		if( $this->rowid ) {
+		// if( $this->rowid ) {
 			// delete the data
-			$q = 'delete from session where rowid = :rid';
-			$stmt = $this->dbh->prepare($q);
-			$stmt->execute(array(':rid' => $this->rowid));
-		}	
+			// $q = 'delete from session where rowid = :rid';
+			// $stmt = $this->dbh->prepare($q);
+			// $stmt->execute(array(':rid' => $this->rowid));
+		// }	
 
 		$name = AuthUtil::generateKeyName('f6a_');
 		
