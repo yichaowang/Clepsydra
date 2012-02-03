@@ -13,9 +13,9 @@
 			<form method="post" action="{{ 'clepsydra:main/login'|url }}" id="login">
 				<img src="{{ 'styles/img/logo.png'|url }}" alt="Clepsydra" id="logo" />
 				
-				<input class="text-replace" default="Email" type="text" name="email" value="Email" id="email" />
+				<input class="text-replace" default="Email" type="text" name="email" value="demo@mail.com" id="email" />
 				
-				<input class="text-replace" default="Password" type="password" name="passwd" value="Password" id="password" />
+				<input class="text-replace" default="Password" type="password" name="passwd" value="demo" id="password" />
 				
 				<input type="submit" value="Login" class="green" />
 				
