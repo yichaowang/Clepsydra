@@ -7,8 +7,9 @@
 		<script type="text/javascript" src="{{ 'javascript/master.js'|url }}"></script>
 	</head>
 	<body id="login_body">
-	    <div id="status-message" class="for-demo" style="position: fixed; top: 60px; left: 25%; zoom: 1; opacity: 1; " class="success"><div style="margin-top: 5px; ">Email: "demo@mail.com" Passwod:"demo". Database and all saves will reset every 24 hours.</div></div>
-
+		<div class="container_12">
+		   <div id="status-message" class="for-demo success"><div style="margin-top: 5px; ">Email: "demo@mail.com" Passwod:"demo". Database and all saves will reset every 24 hours.</div></div> 
+		</div>
 		<div class="container_12">
 			<form method="post" action="{{ 'clepsydra:main/login'|url }}" id="login">
 				<img src="{{ 'styles/img/logo.png'|url }}" alt="Clepsydra" id="logo" />
